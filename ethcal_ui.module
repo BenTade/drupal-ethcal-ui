@@ -123,8 +123,8 @@ function _ethcal_ui_convert_to_ethiopian($date, $use_amharic = FALSE) {
   $jdn = gregoriantojd($month, $day, $year);
   
   // Convert to Ethiopian calendar
-  // Ethiopian epoch is JDN 1724220.5
-  $ethiopian_epoch = 1724220;
+  // Ethiopian epoch is JDN 1723856 (Aug 29, 8 CE Julian)
+  $ethiopian_epoch = 1723856;
   $r = ($jdn - $ethiopian_epoch) % 1461;
   $n = ($r % 365) + 365 * floor($r / 1460);
   

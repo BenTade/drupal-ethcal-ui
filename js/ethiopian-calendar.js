@@ -106,11 +106,12 @@
      * Convert Ethiopian date to Julian Day Number.
      */
     ethiopianToJDN: function(year, month, day) {
-      var jdn = Math.floor((year - 1) / 4) + 
-                (year - 1) * 365 + 
+      // Ethiopian calendar epoch at JDN 1723856 (Aug 29, 8 CE Julian)
+      var jdn = 1723856 + 
+                (year * 365) + 
+                Math.floor(year / 4) + 
                 (month - 1) * 30 + 
-                day + 
-                1723856;
+                day;
       return jdn;
     },
 
@@ -118,10 +119,11 @@
      * Convert Julian Day Number to Ethiopian date.
      */
     jdnToEthiopian: function(jdn) {
-      var r = (jdn - 1723856) % 1461;
+      var ethiopian_epoch = 1723856;
+      var r = (jdn - ethiopian_epoch) % 1461;
       var n = (r % 365) + 365 * Math.floor(r / 1460);
       
-      var year = 4 * Math.floor((jdn - 1723856) / 1461) + 
+      var year = 4 * Math.floor((jdn - ethiopian_epoch) / 1461) + 
                  Math.floor(r / 365) - 
                  Math.floor(r / 1460);
       var month = Math.floor(n / 30) + 1;
