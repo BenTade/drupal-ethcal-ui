@@ -1,0 +1,71 @@
+/**
+ * @file
+ * Styles for Ethiopian Calendar field formatters.
+ */
+
+.ethcal-date-display {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Side by side formatter */
+.ethcal-date-sidebyside {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.ethcal-date-sidebyside .ethcal-ethiopian,
+.ethcal-date-sidebyside .ethcal-gregorian {
+  flex: 1;
+}
+
+.ethcal-date-sidebyside .ethcal-separator {
+  color: #999;
+  font-weight: bold;
+}
+
+/* Merged formatter */
+.ethcal-date-merged {
+  display: inline-block;
+}
+
+.ethcal-date-merged .ethcal-ethiopian {
+  font-weight: bold;
+  color: #0073aa;
+}
+
+.ethcal-date-merged .ethcal-gregorian {
+  color: #666;
+  margin-left: 5px;
+}
+
+.ethcal-date-merged .ethcal-gregorian::before {
+  content: '(';
+}
+
+.ethcal-date-merged .ethcal-gregorian::after {
+  content: ')';
+}
+
+/* Ethiopian only formatter */
+.ethcal-date-ethiopian-only {
+  font-weight: bold;
+  color: #0073aa;
+}
+
+/* Amharic text styling */
+.ethcal-amharic {
+  font-family: 'Noto Sans Ethiopic', 'Abyssinica SIL', sans-serif;
+  direction: ltr;
+}
+
+/* Label styling */
+.ethcal-label {
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 3px;
+}

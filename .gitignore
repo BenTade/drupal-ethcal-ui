@@ -1,0 +1,22 @@
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore temporary files
+*.swp
+*.swo
+*~
+.*.tmp
+
+# Ignore composer dependencies (not needed for module distribution)
+vendor/
+composer.lock
+
+# Ignore node modules (if using any build tools)
+node_modules/

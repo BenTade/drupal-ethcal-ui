@@ -1,0 +1,168 @@
+<?php
+
+/**
+ * @file
+ * Ethiopian Calendar UI module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function ethcal_ui_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.ethcal_ui':
+      $output = '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Ethiopian Calendar UI module provides a datepicker field that supports the Ethiopian calendar system. It allows content creators to input dates using an intuitive Ethiopian calendar interface and display them in various formats.') . '</p>';
+      $output .= '<h3>' . t('Features') . '</h3>';
+      $output .= '<ul>';
+      $output .= '<li>' . t('Ethiopian calendar datepicker widget') . '</li>';
+      $output .= '<li>' . t('Multiple display formatters (side-by-side, merged, Ethiopian-only)') . '</li>';
+      $output .= '<li>' . t('Amharic language support for month names and numerals') . '</li>';
+      $output .= '<li>' . t('Automatic conversion between Ethiopian and Gregorian calendars') . '</li>';
+      $output .= '<li>' . t('Views integration for filtering and displaying dates') . '</li>';
+      $output .= '</ul>';
+      $output .= '<h3>' . t('Usage') . '</h3>';
+      $output .= '<p>' . t('Add an Ethiopian Date field to any content type or entity. Configure the widget to use Amharic text and choose display options. Use the formatters to control how dates appear in your content.') . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function ethcal_ui_theme($existing, $type, $theme, $path) {
+  return [
+    'ethcal_date_sidebyside' => [
+      'variables' => [
+        'gregorian_date' => NULL,
+        'use_amharic' => FALSE,
+        'date_format' => 'medium',
+      ],
+      'template' => 'ethcal-date-sidebyside',
+    ],
+    'ethcal_date_merged' => [
+      'variables' => [
+        'gregorian_date' => NULL,
+        'use_amharic' => FALSE,
+      ],
+      'template' => 'ethcal-date-merged',
+    ],
+    'ethcal_date_only' => [
+      'variables' => [
+        'gregorian_date' => NULL,
+        'use_amharic' => FALSE,
+      ],
+      'template' => 'ethcal-date-only',
+    ],
+  ];
+}
+
+/**
+ * Prepares variables for ethcal_date_sidebyside template.
+ */
+function template_preprocess_ethcal_date_sidebyside(&$variables) {
+  $gregorian_date = $variables['gregorian_date'];
+  $use_amharic = $variables['use_amharic'];
+
+  if (!empty($gregorian_date)) {
+    try {
+      $date = new DateTime($gregorian_date);
+      $variables['gregorian_formatted'] = $date->format('F j, Y');
+      
+      // Convert to Ethiopian date using JavaScript
+      // In a real implementation, you might want to do this server-side
+      $variables['ethiopian_date'] = _ethcal_ui_convert_to_ethiopian($date, $use_amharic);
+    }
+    catch (Exception $e) {
+      $variables['gregorian_formatted'] = '';
+      $variables['ethiopian_date'] = '';
+    }
+  }
+}
+
+/**
+ * Prepares variables for ethcal_date_merged template.
+ */
+function template_preprocess_ethcal_date_merged(&$variables) {
+  template_preprocess_ethcal_date_sidebyside($variables);
+}
+
+/**
+ * Prepares variables for ethcal_date_only template.
+ */
+function template_preprocess_ethcal_date_only(&$variables) {
+  $gregorian_date = $variables['gregorian_date'];
+  $use_amharic = $variables['use_amharic'];
+
+  if (!empty($gregorian_date)) {
+    try {
+      $date = new DateTime($gregorian_date);
+      $variables['ethiopian_date'] = _ethcal_ui_convert_to_ethiopian($date, $use_amharic);
+    }
+    catch (Exception $e) {
+      $variables['ethiopian_date'] = '';
+    }
+  }
+}
+
+/**
+ * Helper function to convert Gregorian date to Ethiopian date.
+ *
+ * This is a simplified conversion. In production, you might want to use
+ * a more robust PHP library or do the conversion client-side.
+ */
+function _ethcal_ui_convert_to_ethiopian($date, $use_amharic = FALSE) {
+  // Ethiopian calendar calculation
+  $year = (int) $date->format('Y');
+  $month = (int) $date->format('m');
+  $day = (int) $date->format('d');
+  
+  // Convert to Julian Day Number
+  $jdn = gregoriantojd($month, $day, $year);
+  
+  // Convert to Ethiopian calendar
+  // Ethiopian epoch is JDN 1724220.5
+  $ethiopian_epoch = 1724220;
+  $r = ($jdn - $ethiopian_epoch) % 1461;
+  $n = ($r % 365) + 365 * floor($r / 1460);
+  
+  $eth_year = 4 * floor(($jdn - $ethiopian_epoch) / 1461) + 
+              floor($r / 365) - 
+              floor($r / 1460);
+  $eth_month = floor($n / 30) + 1;
+  $eth_day = ($n % 30) + 1;
+  
+  // Month names
+  $months_amharic = [
+    'መስከረም', 'ጥቅምት', 'ኅዳር', 'ታኅሳስ', 'ጥር', 'የካቲት',
+    'መጋቢት', 'ሚያዝያ', 'ግንቦት', 'ሰኔ', 'ሐምሌ', 'ነሐሴ', 'ጳጉሜን'
+  ];
+  
+  $months_english = [
+    'Meskerem', 'Tikimt', 'Hidar', 'Tahsas', 'Tir', 'Yekatit',
+    'Megabit', 'Miazia', 'Ginbot', 'Sene', 'Hamle', 'Nehase', 'Pagume'
+  ];
+  
+  if ($use_amharic) {
+    $month_name = $months_amharic[$eth_month - 1];
+    return _ethcal_ui_to_amharic_number($eth_day) . ' ' . $month_name . ' ' . _ethcal_ui_to_amharic_number($eth_year);
+  }
+  else {
+    $month_name = $months_english[$eth_month - 1];
+    return $eth_day . ' ' . $month_name . ' ' . $eth_year;
+  }
+}
+
+/**
+ * Convert number to Amharic numerals.
+ */
+function _ethcal_ui_to_amharic_number($num) {
+  $amharic_numerals = ['፲', '፩', '፪', '፫', '፬', '፭', '፮', '፯', '፰', '፱'];
+  $result = '';
+  foreach (str_split((string) $num) as $digit) {
+    $result .= $amharic_numerals[(int) $digit];
+  }
+  return $result;
+}

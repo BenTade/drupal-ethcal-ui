@@ -1,0 +1,22 @@
+{#
+/**
+ * @file
+ * Template for displaying Ethiopian date side-by-side with Gregorian date.
+ *
+ * Available variables:
+ * - gregorian_formatted: The formatted Gregorian date.
+ * - ethiopian_date: The formatted Ethiopian date.
+ * - use_amharic: Boolean indicating if Amharic should be used.
+ */
+#}
+<div class="ethcal-date-display ethcal-date-sidebyside{{ use_amharic ? ' ethcal-amharic' : '' }}">
+  <div class="ethcal-ethiopian">
+    <span class="ethcal-label">{{ 'Ethiopian'|t }}</span>
+    <span class="ethcal-value">{{ ethiopian_date }}</span>
+  </div>
+  <span class="ethcal-separator">|</span>
+  <div class="ethcal-gregorian">
+    <span class="ethcal-label">{{ 'Gregorian'|t }}</span>
+    <span class="ethcal-value">{{ gregorian_formatted }}</span>
+  </div>
+</div>

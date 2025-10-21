@@ -1,0 +1,33 @@
+ethiopian-calendar:
+  version: 1.0
+  js:
+    js/ethiopian-calendar.js: {}
+    js/ethiopian-datepicker.js: {}
+  css:
+    theme:
+      css/ethiopian-datepicker.css: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/jquery.once
+    - core/drupalSettings
+
+widget:
+  version: 1.0
+  js:
+    js/ethcal-widget.js: {}
+  css:
+    theme:
+      css/ethcal-widget.css: {}
+  dependencies:
+    - ethcal_ui/ethiopian-calendar
+    - core/drupal
+    - core/jquery
+
+formatter:
+  version: 1.0
+  css:
+    theme:
+      css/ethcal-formatter.css: {}
+  dependencies:
+    - core/drupal
