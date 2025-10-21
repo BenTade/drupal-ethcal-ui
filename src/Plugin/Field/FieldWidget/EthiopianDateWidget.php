@@ -13,7 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
  *   id = "ethiopian_date_widget",
  *   label = @Translation("Ethiopian Date Picker"),
  *   field_types = {
- *     "ethiopian_date"
+ *     "datetime"
  *   }
  * )
  */
@@ -85,7 +85,14 @@ class EthiopianDateWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    // For datetime fields, the value is stored in the 'value' property
+    // and is typically in ISO 8601 format (e.g., '2024-01-15T00:00:00')
     $value = $items[$delta]->value ?? '';
+    
+    // Extract just the date part if it's a datetime value
+    if (!empty($value) && strpos($value, 'T') !== FALSE) {
+      $value = substr($value, 0, 10); // Get YYYY-MM-DD part
+    }
 
     $element['#type'] = 'container';
     $element['#attributes']['class'][] = 'form-item--ethcal-date';
@@ -157,9 +164,17 @@ class EthiopianDateWidget extends WidgetBase {
    */
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
     foreach ($values as &$value) {
-      if (isset($value['value'])) {
-        // The value is already in the correct format (ISO date from hidden field)
-        $value = ['value' => $value['value']];
+      if (isset($value['value']) && !empty($value['value'])) {
+        // For datetime fields, we need to store the value in ISO 8601 format
+        // If the field type is 'datetime', add time component (midnight)
+        $date_value = $value['value'];
+        
+        // If it's just a date (YYYY-MM-DD), convert to datetime format
+        if (strlen($date_value) === 10 && strpos($date_value, 'T') === FALSE) {
+          $date_value .= 'T00:00:00';
+        }
+        
+        $value = ['value' => $date_value];
       }
     }
     return $values;

@@ -13,7 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
  *   id = "ethiopian_date_merged",
  *   label = @Translation("Ethiopian Date (Merged View)"),
  *   field_types = {
- *     "ethiopian_date"
+ *     "datetime"
  *   }
  * )
  */
@@ -67,9 +67,15 @@ class EthiopianDateMergedFormatter extends FormatterBase {
 
     foreach ($items as $delta => $item) {
       if (!empty($item->value)) {
+        // For datetime fields, extract just the date part
+        $date_value = $item->value;
+        if (strpos($date_value, 'T') !== FALSE) {
+          $date_value = substr($date_value, 0, 10); // Get YYYY-MM-DD part
+        }
+        
         $elements[$delta] = [
           '#theme' => 'ethcal_date_merged',
-          '#gregorian_date' => $item->value,
+          '#gregorian_date' => $date_value,
           '#use_amharic' => $this->getSetting('use_amharic'),
           '#attached' => [
             'library' => [
