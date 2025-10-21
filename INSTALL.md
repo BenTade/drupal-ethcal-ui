@@ -6,6 +6,7 @@ Before installing the Ethiopian Calendar UI module, ensure you have:
 
 - Drupal 10 or 11 installed
 - PHP 8.1 or higher
+- Node.js and npm (for installing JavaScript dependencies)
 - Access to Drupal's admin interface or Drush command line tool
 - Basic understanding of Drupal field configuration
 
@@ -20,12 +21,19 @@ Before installing the Ethiopian Calendar UI module, ensure you have:
    cp -r /path/to/ethcal_ui modules/custom/
    ```
 
-2. **Enable the module:**
+2. **Install JavaScript dependencies:**
    ```bash
+   cd modules/custom/ethcal_ui
+   npm install
+   ```
+
+3. **Enable the module:**
+   ```bash
+   cd /path/to/your/drupal
    drush en ethcal_ui -y
    ```
 
-3. **Clear cache:**
+4. **Clear cache:**
    ```bash
    drush cr
    ```
@@ -35,13 +43,19 @@ Before installing the Ethiopian Calendar UI module, ensure you have:
 1. **Copy the module:**
    - Copy the `ethcal_ui` directory to `modules/custom/` in your Drupal installation
 
-2. **Enable through UI:**
+2. **Install JavaScript dependencies:**
+   ```bash
+   cd modules/custom/ethcal_ui
+   npm install
+   ```
+
+3. **Enable through UI:**
    - Navigate to: Admin > Extend (`/admin/modules`)
    - Find "Ethiopian Calendar UI" in the list
    - Check the box next to it
    - Click "Install" at the bottom of the page
 
-3. **Clear cache:**
+4. **Clear cache:**
    - Navigate to: Admin > Configuration > Development > Performance
    - Click "Clear all caches"
 
