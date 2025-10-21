@@ -6,6 +6,12 @@
 (function ($, Drupal, EthiopianCalendar) {
   'use strict';
 
+  // Ensure EthiopianCalendar is available
+  if (typeof EthiopianCalendar === 'undefined') {
+    console.error('EthiopianCalendar library is not loaded. Cannot initialize datepicker.');
+    return;
+  }
+
   /**
    * Ethiopian Datepicker jQuery plugin.
    */

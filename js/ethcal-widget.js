@@ -13,8 +13,15 @@
     attach: function (context, settings) {
       $('.ethcal-datepicker-input', context).once('ethcal-widget').each(function () {
         var $input = $(this);
+        
+        // Check if the ethiopianDatepicker plugin is available
+        if (typeof $.fn.ethiopianDatepicker !== 'function') {
+          console.error('ethiopianDatepicker plugin is not loaded.');
+          return;
+        }
+        
         var $hiddenInput = $input.siblings('.ethcal-hidden-value');
-        var widgetSettings = $input.data('widget-settings') || {};
+        var widgetSettings = $input.data('widgetSettings') || {};
 
         $input.ethiopianDatepicker({
           useAmharic: widgetSettings.useAmharic || false,
