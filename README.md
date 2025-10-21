@@ -18,9 +18,34 @@ A Drupal 11 module that provides an Ethiopian calendar datepicker widget and for
 
 ## Installation
 
-1. Copy the `ethcal_ui` directory to your Drupal `modules/custom` directory
-2. Enable the module: `drush en ethcal_ui`
-3. Clear cache: `drush cr`
+### Requirements
+
+This module requires the `bentade/ethcal-ui` package, which must be installed via Composer.
+
+### Installation Steps
+
+1. Install the module using Composer (recommended):
+   ```bash
+   composer require drupal/ethcal_ui
+   ```
+   
+   Or, if installing from the repository:
+   ```bash
+   cd /path/to/drupal
+   composer require bentade/ethcal-ui
+   ```
+
+2. Enable the module:
+   ```bash
+   drush en ethcal_ui
+   ```
+
+3. Clear cache:
+   ```bash
+   drush cr
+   ```
+
+**Note**: The module depends on the `bentade/ethcal-ui` package for Ethiopian calendar functionality. If you install the module manually (not via Composer), you must ensure the dependency is installed by running `composer install` in your Drupal root directory.
 
 ## Usage
 
@@ -71,6 +96,8 @@ Meskerem, Tikimt, Hidar, Tahsas, Tir, Yekatit, Megabit, Miazia, Ginbot, Sene, Ha
 
 - Drupal 10 or 11
 - PHP 8.1 or higher
+- Composer (for dependency management)
+- `bentade/ethcal-ui` package (automatically installed via Composer)
 - Field module (core)
 - Datetime module (core)
 - Views module (core)
@@ -79,19 +106,28 @@ Meskerem, Tikimt, Hidar, Tahsas, Tir, Yekatit, Megabit, Miazia, Ginbot, Sene, Ha
 
 The module extends the standard Drupal datetime field with Ethiopian calendar functionality. Dates are stored internally in ISO 8601 format using the Gregorian calendar for database compatibility and interoperability. Conversion to/from Ethiopian calendar happens on display and input through the widget and formatters.
 
+This module integrates the `bentade/ethcal-ui` package, which provides:
+- JavaScript UI components for Ethiopian calendar selection
+- PHP classes for server-side date conversion using the `andegna/calender` library
+- Pre-built, optimized JavaScript and CSS files
+
 ### JavaScript Libraries
 
-- `ethiopian-calendar.js`: Core conversion library between calendars
-- `ethiopian-datepicker.js`: jQuery datepicker plugin
+The module uses the `ethcal-ui` package's pre-built libraries:
+- `ethcal-ui.umd.js`: Complete Ethiopian calendar UI library (from bentade/ethcal-ui package)
 - `ethcal-widget.js`: Drupal behavior for field widget integration
 
 ### PHP Classes
 
+#### Drupal Classes
 - `EthiopianDateWidget`: Field widget plugin for datetime fields
 - `EthiopianDateDefaultFormatter`: Side-by-side formatter for datetime fields
 - `EthiopianDateMergedFormatter`: Merged view formatter for datetime fields
 - `EthiopianDateOnlyFormatter`: Ethiopian-only formatter for datetime fields
 - `EthiopianDateField`: Views field handler for datetime fields
+
+#### Package Classes (bentade/ethcal-ui)
+- `EthiopianCalendar`: Server-side date conversion using andegna/calender library
 
 ## Development
 
@@ -100,13 +136,10 @@ The module extends the standard Drupal datetime field with Ethiopian calendar fu
 ```
 ethcal_ui/
 ├── css/
-│   ├── ethiopian-datepicker.css
 │   ├── ethcal-widget.css
 │   └── ethcal-formatter.css
 ├── js/
-│   ├── ethiopian-calendar.js
-│   ├── ethiopian-datepicker.js
-│   └── ethcal-widget.js
+│   └── ethcal-widget.js          # Drupal integration for ethcal-ui package
 ├── src/
 │   └── Plugin/
 │       ├── Field/
@@ -114,6 +147,28 @@ ethcal_ui/
 │       │   │   └── EthiopianDateWidget.php
 │       │   └── FieldFormatter/
 │       │       ├── EthiopianDateDefaultFormatter.php
+│       │       ├── EthiopianDateMergedFormatter.php
+│       │       └── EthiopianDateOnlyFormatter.php
+│       └── views/
+│           └── field/
+│               └── EthiopianDateField.php
+├── templates/
+│   ├── ethcal-date-sidebyside.html.twig
+│   ├── ethcal-date-merged.html.twig
+│   └── ethcal-date-only.html.twig
+├── composer.json                 # Includes bentade/ethcal-ui dependency
+├── ethcal_ui.info.yml
+├── ethcal_ui.libraries.yml       # References vendor/bentade/ethcal-ui files
+├── ethcal_ui.module
+├── ethcal_ui.views.inc
+└── README.md
+```
+
+**Note**: The module relies on the `bentade/ethcal-ui` package for:
+- JavaScript calendar UI (`vendor/bentade/ethcal-ui/dist/ethcal-ui.umd.js`)
+- CSS styling (`vendor/bentade/ethcal-ui/dist/ethcal-ui.css`)
+- PHP date conversion (`vendor/bentade/ethcal-ui/php/EthiopianCalendar.php`)
+
 │       │       ├── EthiopianDateMergedFormatter.php
 │       │       └── EthiopianDateOnlyFormatter.php
 │       └── views/
