@@ -71,8 +71,7 @@ function template_preprocess_ethcal_date_sidebyside(&$variables) {
       $date = new DateTime($gregorian_date);
       $variables['gregorian_formatted'] = $date->format('F j, Y');
       
-      // Convert to Ethiopian date using JavaScript
-      // In a real implementation, you might want to do this server-side
+      // Use the ethcal-ui package's EthiopianCalendar class
       $variables['ethiopian_date'] = _ethcal_ui_convert_to_ethiopian($date, $use_amharic);
     }
     catch (Exception $e) {
@@ -110,49 +109,69 @@ function template_preprocess_ethcal_date_only(&$variables) {
 /**
  * Helper function to convert Gregorian date to Ethiopian date.
  *
- * This is a simplified conversion. In production, you might want to use
- * a more robust PHP library or do the conversion client-side.
+ * Uses the ethcal-ui package's EthiopianCalendar class.
  */
 function _ethcal_ui_convert_to_ethiopian($date, $use_amharic = FALSE) {
-  // Ethiopian calendar calculation
-  $year = (int) $date->format('Y');
-  $month = (int) $date->format('m');
-  $day = (int) $date->format('d');
+  // Ensure Composer autoload is available
+  $autoload_file = DRUPAL_ROOT . '/vendor/autoload.php';
+  if (!file_exists($autoload_file)) {
+    // Fallback: try module's vendor directory
+    $autoload_file = __DIR__ . '/vendor/autoload.php';
+  }
   
-  // Convert to Julian Day Number
-  $jdn = gregoriantojd($month, $day, $year);
+  if (!file_exists($autoload_file)) {
+    \Drupal::logger('ethcal_ui')->error('Composer autoload file not found. Please run composer install.');
+    return '';
+  }
   
-  // Convert to Ethiopian calendar
-  // Ethiopian epoch is JDN 1724220.5
-  $ethiopian_epoch = 1724220;
-  $r = ($jdn - $ethiopian_epoch) % 1461;
-  $n = ($r % 365) + 365 * floor($r / 1460);
+  require_once $autoload_file;
   
-  $eth_year = 4 * floor(($jdn - $ethiopian_epoch) / 1461) + 
-              floor($r / 365) - 
-              floor($r / 1460);
-  $eth_month = floor($n / 30) + 1;
-  $eth_day = ($n % 30) + 1;
+  // Check if the EthiopianCalendar class is available
+  $eth_calendar_file = DRUPAL_ROOT . '/vendor/bentade/ethcal-ui/php/EthiopianCalendar.php';
+  if (!file_exists($eth_calendar_file)) {
+    \Drupal::logger('ethcal_ui')->error('EthiopianCalendar class not found. Please ensure bentade/ethcal-ui package is installed via Composer.');
+    return '';
+  }
   
-  // Month names
+  require_once $eth_calendar_file;
+  
+  try {
+    $calendar = new EthiopianCalendar();
+    $ethDate = $calendar->toEthiopian($date);
+    
+    // Format the date based on Amharic preference
+    if ($use_amharic) {
+      // Use andegna/calender's Amharic formatting if available
+      try {
+        $ethDT = $calendar->toEthiopianDateTime($date);
+        return $ethDT->format(\Andegna\Constants::DATE_ETHIOPIAN);
+      }
+      catch (Exception $e) {
+        // Fallback to simple formatting
+        return _ethcal_ui_to_amharic_number($ethDate['day']) . ' ' . 
+               _ethcal_ui_get_amharic_month_name($ethDate['month']) . ' ' . 
+               _ethcal_ui_to_amharic_number($ethDate['year']);
+      }
+    }
+    else {
+      return $calendar->format($ethDate, 'd M y');
+    }
+  }
+  catch (Exception $e) {
+    \Drupal::logger('ethcal_ui')->error('Error converting date: @error', ['@error' => $e->getMessage()]);
+    return '';
+  }
+}
+
+/**
+ * Get Amharic month name.
+ */
+function _ethcal_ui_get_amharic_month_name($month) {
   $months_amharic = [
     'መስከረም', 'ጥቅምት', 'ኅዳር', 'ታኅሳስ', 'ጥር', 'የካቲት',
     'መጋቢት', 'ሚያዝያ', 'ግንቦት', 'ሰኔ', 'ሐምሌ', 'ነሐሴ', 'ጳጉሜን'
   ];
-  
-  $months_english = [
-    'Meskerem', 'Tikimt', 'Hidar', 'Tahsas', 'Tir', 'Yekatit',
-    'Megabit', 'Miazia', 'Ginbot', 'Sene', 'Hamle', 'Nehase', 'Pagume'
-  ];
-  
-  if ($use_amharic) {
-    $month_name = $months_amharic[$eth_month - 1];
-    return _ethcal_ui_to_amharic_number($eth_day) . ' ' . $month_name . ' ' . _ethcal_ui_to_amharic_number($eth_year);
-  }
-  else {
-    $month_name = $months_english[$eth_month - 1];
-    return $eth_day . ' ' . $month_name . ' ' . $eth_year;
-  }
+  return $months_amharic[$month - 1] ?? '';
 }
 
 /**

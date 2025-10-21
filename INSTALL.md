@@ -6,18 +6,24 @@ Before installing the Ethiopian Calendar UI module, ensure you have:
 
 - Drupal 10 or 11 installed
 - PHP 8.1 or higher
+- Composer installed
 - Access to Drupal's admin interface or Drush command line tool
 - Basic understanding of Drupal field configuration
 
 ## Installation Steps
 
-### Method 1: Using Drush (Recommended)
+### Method 1: Using Composer (Recommended)
 
-1. **Copy the module to your Drupal installation:**
+1. **Install the module and its dependencies:**
    ```bash
    cd /path/to/your/drupal
-   mkdir -p modules/custom
-   cp -r /path/to/ethcal_ui modules/custom/
+   composer require drupal/ethcal_ui
+   ```
+
+   Or, if installing from the repository:
+   ```bash
+   composer require bentade/ethcal-ui
+   # Then copy the module to modules/custom/ethcal_ui
    ```
 
 2. **Enable the module:**
@@ -30,18 +36,58 @@ Before installing the Ethiopian Calendar UI module, ensure you have:
    drush cr
    ```
 
-### Method 2: Using Drupal Admin UI
+### Method 2: Manual Installation
 
-1. **Copy the module:**
+**Important**: This module requires the `bentade/ethcal-ui` package. You must install dependencies via Composer even for manual installation.
+
+1. **Copy the module to your Drupal installation:**
+   ```bash
+   cd /path/to/your/drupal
+   mkdir -p modules/custom
+   cp -r /path/to/ethcal_ui modules/custom/
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   cd /path/to/your/drupal
+   composer require bentade/ethcal-ui
+   ```
+
+3. **Enable the module:**
+   ```bash
+   drush en ethcal_ui -y
+   ```
+
+3. **Enable the module:**
+   ```bash
+   drush en ethcal_ui -y
+   ```
+
+4. **Clear cache:**
+   ```bash
+   drush cr
+   ```
+
+### Method 3: Using Drupal Admin UI
+
+**Important**: Even when using the admin UI, you must install dependencies via Composer first.
+
+1. **Install dependencies:**
+   ```bash
+   cd /path/to/your/drupal
+   composer require bentade/ethcal-ui
+   ```
+
+2. **Copy the module:**
    - Copy the `ethcal_ui` directory to `modules/custom/` in your Drupal installation
 
-2. **Enable through UI:**
+3. **Enable through UI:**
    - Navigate to: Admin > Extend (`/admin/modules`)
    - Find "Ethiopian Calendar UI" in the list
    - Check the box next to it
    - Click "Install" at the bottom of the page
 
-3. **Clear cache:**
+4. **Clear cache:**
    - Navigate to: Admin > Configuration > Development > Performance
    - Click "Clear all caches"
 
@@ -126,15 +172,23 @@ To test the module:
 
 ## Troubleshooting
 
+### Missing dependencies error
+- Run `composer install` in your Drupal root directory
+- Ensure `bentade/ethcal-ui` package is installed: `composer show bentade/ethcal-ui`
+- Check that `vendor/bentade/ethcal-ui` directory exists
+
 ### Module doesn't appear in Extend page
 - Ensure the module is in the correct location: `modules/custom/ethcal_ui/`
 - Check file permissions
+- Verify dependencies are installed via Composer
 - Clear cache: `drush cr`
 
 ### Datepicker doesn't show
+- Verify `vendor/bentade/ethcal-ui/dist/ethcal-ui.umd.js` exists
 - Clear cache: `drush cr`
 - Check browser console for JavaScript errors
 - Ensure jQuery is loaded on the page
+- Check that the library path in `ethcal_ui.libraries.yml` is correct
 
 ### Dates don't display correctly
 - Verify the stored date format is ISO 8601 (YYYY-MM-DD)

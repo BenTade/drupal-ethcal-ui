@@ -1,11 +1,10 @@
 ethiopian-calendar:
   version: 1.0
   js:
-    js/ethiopian-calendar.js: {}
-    js/ethiopian-datepicker.js: {}
+    /vendor/bentade/ethcal-ui/dist/ethcal-ui.umd.js: { minified: true }
   css:
     theme:
-      css/ethiopian-datepicker.css: {}
+      /vendor/bentade/ethcal-ui/dist/ethcal-ui.css: {}
   dependencies:
     - core/drupal
     - core/jquery
