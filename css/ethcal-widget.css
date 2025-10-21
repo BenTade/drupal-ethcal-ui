@@ -1,0 +1,40 @@
+/**
+ * @file
+ * Styles for Ethiopian Calendar field widget.
+ */
+
+.ethcal-datepicker-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ethcal-datepicker-input:focus {
+  outline: none;
+  border-color: #0073aa;
+  box-shadow: 0 0 0 1px #0073aa;
+}
+
+.ethcal-hidden-value {
+  display: none;
+}
+
+.form-item--ethcal-date {
+  margin-bottom: 1em;
+}
+
+.form-item--ethcal-date label {
+  display: block;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+.form-item--ethcal-date .description {
+  margin-top: 0.5em;
+  font-size: 0.9em;
+  color: #666;
+}

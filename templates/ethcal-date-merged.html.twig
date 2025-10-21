@@ -1,0 +1,15 @@
+{#
+/**
+ * @file
+ * Template for displaying Ethiopian date with Gregorian in parentheses.
+ *
+ * Available variables:
+ * - gregorian_formatted: The formatted Gregorian date.
+ * - ethiopian_date: The formatted Ethiopian date.
+ * - use_amharic: Boolean indicating if Amharic should be used.
+ */
+#}
+<div class="ethcal-date-display ethcal-date-merged{{ use_amharic ? ' ethcal-amharic' : '' }}">
+  <span class="ethcal-ethiopian">{{ ethiopian_date }}</span>
+  <span class="ethcal-gregorian">{{ gregorian_formatted }}</span>
+</div>
