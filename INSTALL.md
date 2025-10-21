@@ -49,10 +49,11 @@ Before installing the Ethiopian Calendar UI module, ensure you have:
 
 To verify the installation was successful:
 
-1. Go to Structure > Content types > [Any content type] > Manage fields
-2. Click "Add field"
-3. Look for "Ethiopian Date" in the field type dropdown under "General"
-4. If you see it, the module is installed correctly!
+1. Go to Structure > Content types > [Any content type] > Manage form display
+2. Add or edit a Date field
+3. Click on the widget dropdown
+4. Look for "Ethiopian Date Picker" in the widget options
+5. If you see it, the module is installed correctly!
 
 ## Configuration
 
@@ -62,16 +63,19 @@ To verify the installation was successful:
 2. Select a content type (e.g., Article)
 3. Click "Manage fields"
 4. Click "Add field"
-5. Select "Ethiopian Date" from the field type dropdown
+5. Select "Date" from the field type dropdown
 6. Enter a label (e.g., "Event Date")
 7. Click "Save and continue"
 8. Configure field settings (optional)
 9. Click "Save field settings"
-10. Configure widget settings:
+10. Go to "Manage form display" tab
+11. Change the widget to "Ethiopian Date Picker"
+12. Click the settings gear icon to configure widget settings:
     - ☑ Use Amharic words and numbers
     - ☑ Show Gregorian date alongside
     - ☐ Ethiopian calendar only
-11. Click "Save settings"
+13. Click "Update"
+14. Click "Save"
 
 ### Configuring the Display
 

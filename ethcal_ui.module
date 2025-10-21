@@ -14,17 +14,17 @@ function ethcal_ui_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
     case 'help.page.ethcal_ui':
       $output = '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('The Ethiopian Calendar UI module provides a datepicker field that supports the Ethiopian calendar system. It allows content creators to input dates using an intuitive Ethiopian calendar interface and display them in various formats.') . '</p>';
+      $output .= '<p>' . t('The Ethiopian Calendar UI module provides a widget and formatters for date fields that support the Ethiopian calendar system. It extends the standard Drupal datetime field to allow content creators to input dates using an intuitive Ethiopian calendar interface and display them in various formats.') . '</p>';
       $output .= '<h3>' . t('Features') . '</h3>';
       $output .= '<ul>';
-      $output .= '<li>' . t('Ethiopian calendar datepicker widget') . '</li>';
+      $output .= '<li>' . t('Ethiopian calendar datepicker widget for date fields') . '</li>';
       $output .= '<li>' . t('Multiple display formatters (side-by-side, merged, Ethiopian-only)') . '</li>';
       $output .= '<li>' . t('Amharic language support for month names and numerals') . '</li>';
       $output .= '<li>' . t('Automatic conversion between Ethiopian and Gregorian calendars') . '</li>';
       $output .= '<li>' . t('Views integration for filtering and displaying dates') . '</li>';
       $output .= '</ul>';
       $output .= '<h3>' . t('Usage') . '</h3>';
-      $output .= '<p>' . t('Add an Ethiopian Date field to any content type or entity. Configure the widget to use Amharic text and choose display options. Use the formatters to control how dates appear in your content.') . '</p>';
+      $output .= '<p>' . t('Add a standard Date field to any content type or entity. In the field widget settings, select "Ethiopian Date Picker" as the widget. Configure the widget to use Amharic text and choose display options. In the display settings, choose from the Ethiopian calendar formatters to control how dates appear in your content.') . '</p>';
       return $output;
   }
 }
