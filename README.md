@@ -2,6 +2,8 @@
 
 A Drupal 11 module that provides an Ethiopian calendar datepicker widget and formatters for date fields, with full Views integration.
 
+**Note:** This module includes a fully integrated Ethiopian calendar datepicker library (`ethcal-ui`) built specifically for this Drupal module. No external dependencies or additional libraries are required.
+
 ## Features
 
 - **Ethiopian Calendar Datepicker**: Intuitive popup calendar interface for selecting Ethiopian dates
@@ -78,6 +80,17 @@ Meskerem, Tikimt, Hidar, Tahsas, Tir, Yekatit, Megabit, Miazia, Ginbot, Sene, Ha
 ## Technical Details
 
 The module extends the standard Drupal datetime field with Ethiopian calendar functionality. Dates are stored internally in ISO 8601 format using the Gregorian calendar for database compatibility and interoperability. Conversion to/from Ethiopian calendar happens on display and input through the widget and formatters.
+
+### Integrated Datepicker Library
+
+This module includes a custom-built **ethcal-ui datepicker library** that provides:
+- Complete Ethiopian calendar date conversion algorithms (Gregorian ↔ Ethiopian)
+- Interactive datepicker UI with month/year navigation
+- Amharic language support (month names and numerals)
+- jQuery plugin architecture for easy integration
+- No external dependencies beyond Drupal core libraries
+
+The datepicker library is fully integrated within this module and does not require any separate installation or npm packages.
 
 ### JavaScript Libraries
 
