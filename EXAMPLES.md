@@ -15,18 +15,22 @@ You want to create an event content type with an Ethiopian date field for event 
    - Description: "Ethiopian events and celebrations"
    - Click "Save and manage fields"
 
-2. **Add the Ethiopian date field:**
+2. **Add the date field:**
    - Click "Add field"
-   - Field type: "Ethiopian Date"
+   - Field type: "Date" (from core datetime module)
    - Label: "Event Date"
    - Click "Save and continue"
    - Use default storage settings
    - Click "Save field settings"
 
 3. **Configure the widget:**
-   - ☑ Use Amharic words and numbers
-   - ☑ Show Gregorian date alongside
-   - Click "Save settings"
+   - Go to "Manage form display" tab
+   - Change widget to: "Ethiopian Date Picker"
+   - Click settings gear icon:
+     - ☑ Use Amharic words and numbers
+     - ☑ Show Gregorian date alongside
+   - Click "Update"
+   - Click "Save"
 
 4. **Configure the display:**
    - Go to: Manage display tab
@@ -56,10 +60,12 @@ Add an Ethiopian birth date field to user profiles.
 1. **Add field to user entity:**
    - Go to: Configuration > People > Account settings
    - Click "Manage fields" tab
-   - Add field: Ethiopian Date
+   - Add field: Date
    - Label: "Birth Date (Ethiopian)"
 
 2. **Configure for birth dates:**
+   - Go to "Manage form display" tab
+   - Change widget to: "Ethiopian Date Picker"
    - Widget settings:
      - ☑ Use Amharic words and numbers
      - ☐ Show Gregorian date alongside
@@ -83,9 +89,12 @@ Display article publication dates in both Ethiopian and Gregorian calendars.
 
 1. **Add field to Article:**
    - Structure > Content types > Article > Manage fields
-   - Add field: "Ethiopian Publication Date"
+   - Add field: Date
+   - Label: "Ethiopian Publication Date"
 
 2. **Widget configuration:**
+   - Go to "Manage form display" tab
+   - Change widget to: "Ethiopian Date Picker"
    - ☑ Use Amharic words and numbers
    - ☑ Show Gregorian date alongside
 

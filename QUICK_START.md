@@ -21,17 +21,21 @@ drush cr
 
 1. Navigate to: **Structure → Content types → Article → Manage fields**
 2. Click **"Add field"**
-3. Select **"Ethiopian Date"** from dropdown
+3. Select **"Date"** from the dropdown (from core datetime module)
 4. Label: **"Event Date"**
 5. Click **"Save and continue"** (use defaults)
 6. Click **"Save settings"**
 
-### 2. Configure Widget (Optional)
+### 2. Configure Widget
 
-On the field settings page:
-- ☑ **Use Amharic words and numbers** (for Amharic display)
-- ☑ **Show Gregorian date alongside** (recommended)
-- Click **"Save settings"**
+1. Go to: **Structure → Content types → Article → Manage form display**
+2. Find your "Event Date" field
+3. Change widget to: **"Ethiopian Date Picker"**
+4. Click the settings gear icon to configure:
+   - ☑ **Use Amharic words and numbers** (for Amharic display)
+   - ☑ **Show Gregorian date alongside** (recommended)
+5. Click **"Update"**
+6. Click **"Save"**
 
 ### 3. Configure Display
 
@@ -91,7 +95,8 @@ You now have a working Ethiopian calendar datepicker on your Drupal site!
 
 ```
 Configuration → People → Account settings
-→ Manage fields → Add field → Ethiopian Date
+→ Manage fields → Add field → Date
+→ Manage form display → Change widget to "Ethiopian Date Picker"
 ```
 
 ### Use in Views

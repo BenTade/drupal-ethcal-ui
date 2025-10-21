@@ -1,6 +1,6 @@
 # Ethiopian Calendar UI for Drupal 11
 
-A Drupal 11 module that provides an Ethiopian calendar datepicker field with multiple display formatters and full Views integration.
+A Drupal 11 module that provides an Ethiopian calendar datepicker widget and formatters for date fields, with full Views integration.
 
 ## Features
 
@@ -28,9 +28,10 @@ A Drupal 11 module that provides an Ethiopian calendar datepicker field with mul
 
 1. Go to Structure > Content types > [Your content type] > Manage fields
 2. Click "Add field"
-3. Select "Ethiopian Date" as the field type
+3. Select "Date" as the field type (from the core datetime module)
 4. Configure the field settings
-5. Configure the widget settings:
+5. In the "Manage form display" tab, select "Ethiopian Date Picker" as the widget
+6. Configure the widget settings:
    - Enable "Use Amharic words and numbers" for Amharic display
    - Choose whether to show Gregorian date alongside
    - Select if you want Ethiopian calendar only
@@ -46,9 +47,10 @@ A Drupal 11 module that provides an Ethiopian calendar datepicker field with mul
 ### Using in Views
 
 1. Create or edit a View
-2. Add the Ethiopian Date field
-3. Configure display format and Amharic option in field settings
-4. Use date filters to filter content by date ranges
+2. Add your date field to the view
+3. The field will use the Ethiopian Date Field handler
+4. Configure display format and Amharic option in field settings
+5. Use date filters to filter content by date ranges
 
 ## Ethiopian Calendar
 
@@ -75,7 +77,7 @@ Meskerem, Tikimt, Hidar, Tahsas, Tir, Yekatit, Megabit, Miazia, Ginbot, Sene, Ha
 
 ## Technical Details
 
-The module stores dates internally in ISO 8601 format (YYYY-MM-DD) using the Gregorian calendar for database compatibility and interoperability. Conversion to/from Ethiopian calendar happens on display and input.
+The module extends the standard Drupal datetime field with Ethiopian calendar functionality. Dates are stored internally in ISO 8601 format using the Gregorian calendar for database compatibility and interoperability. Conversion to/from Ethiopian calendar happens on display and input through the widget and formatters.
 
 ### JavaScript Libraries
 
@@ -85,12 +87,11 @@ The module stores dates internally in ISO 8601 format (YYYY-MM-DD) using the Gre
 
 ### PHP Classes
 
-- `EthiopianDateItem`: Field type plugin
-- `EthiopianDateWidget`: Field widget plugin
-- `EthiopianDateDefaultFormatter`: Side-by-side formatter
-- `EthiopianDateMergedFormatter`: Merged view formatter
-- `EthiopianDateOnlyFormatter`: Ethiopian-only formatter
-- `EthiopianDateField`: Views field handler
+- `EthiopianDateWidget`: Field widget plugin for datetime fields
+- `EthiopianDateDefaultFormatter`: Side-by-side formatter for datetime fields
+- `EthiopianDateMergedFormatter`: Merged view formatter for datetime fields
+- `EthiopianDateOnlyFormatter`: Ethiopian-only formatter for datetime fields
+- `EthiopianDateField`: Views field handler for datetime fields
 
 ## Development
 
@@ -109,8 +110,6 @@ ethcal_ui/
 ├── src/
 │   └── Plugin/
 │       ├── Field/
-│       │   ├── FieldType/
-│       │   │   └── EthiopianDateItem.php
 │       │   ├── FieldWidget/
 │       │   │   └── EthiopianDateWidget.php
 │       │   └── FieldFormatter/

@@ -2,6 +2,31 @@
 
 All notable changes to the Ethiopian Calendar UI module will be documented in this file.
 
+## [2.0.0] - 2025-10-21
+
+### Changed - BREAKING
+- **Major architectural change**: Module no longer provides a custom field type
+- Widget and formatters now extend the standard Drupal `datetime` field type
+- Widget can be used with any Date field
+- Formatters can be used with any Date field
+
+### Removed
+- Custom `ethiopian_date` field type
+- `EthiopianDateItem` field type class
+- Field storage configuration file
+
+### Updated
+- `EthiopianDateWidget` now works with `datetime` field type
+- All three formatters now work with `datetime` field type
+- Views integration updated to use `hook_field_views_data_alter()`
+- Documentation updated to reflect new architecture
+- Module description and help text updated
+
+### Migration Notes
+- Existing `ethiopian_date` fields will need to be migrated to standard Date fields
+- Configure the Date field to use "Ethiopian Date Picker" widget
+- Configure display to use Ethiopian calendar formatters
+
 ## [1.0.0] - 2025-10-21
 
 ### Added
