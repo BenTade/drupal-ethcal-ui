@@ -20,3 +20,8 @@ composer.lock
 
 # Ignore node modules (if using any build tools)
 node_modules/
+
+# Ignore test files
+test.html
+test-code.js
+jquery.js
