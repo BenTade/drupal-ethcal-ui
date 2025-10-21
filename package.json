@@ -1,0 +1,25 @@
+{
+  "name": "drupal/ethcal_ui",
+  "version": "1.0.0",
+  "description": "Provides an Ethiopian calendar datepicker field with formatters for Drupal 11",
+  "keywords": [
+    "Drupal",
+    "Ethiopian calendar",
+    "datepicker",
+    "field",
+    "Amharic"
+  ],
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://github.com/BenTade/drupal-ethcal-ui",
+  "author": {
+    "name": "BenTade",
+    "role": "Maintainer"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BenTade/drupal-ethcal-ui"
+  },
+  "dependencies": {
+    "ethcal-ui": "github:BenTade/ethcal-ui"
+  }
+}

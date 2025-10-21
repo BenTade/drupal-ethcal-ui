@@ -74,6 +74,7 @@ Meskerem, Tikimt, Hidar, Tahsas, Tir, Yekatit, Megabit, Miazia, Ginbot, Sene, Ha
 - Field module (core)
 - Datetime module (core)
 - Views module (core)
+- [ethcal-ui](https://github.com/BenTade/ethcal-ui) JavaScript library
 
 ## Technical Details
 
