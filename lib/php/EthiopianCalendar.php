@@ -10,9 +10,11 @@
  * Ethiopian calendar calculations and exposes all its functionalities.
  */
 
-// Note: This class expects Composer autoloader to be already loaded.
-// In Drupal context, the module handles autoloading before requiring this file.
-// If used standalone, ensure vendor/autoload.php is loaded before requiring this file.
+/**
+ * Note: This class expects Composer autoloader to be already loaded.
+ * In Drupal context, the module handles autoloading before requiring this file.
+ * If used standalone, ensure vendor/autoload.php is loaded before requiring this file.
+ */
 
 use Andegna\DateTime as AndegnaDateTime;
 use Andegna\DateTimeFactory;
