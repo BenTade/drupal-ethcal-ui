@@ -18,14 +18,8 @@
   "require": {
     "php": ">=8.1",
     "drupal/core": "^10 || ^11",
-    "bentade/ethcal-ui": "^1.0"
+    "andegna/calender": "^2.4"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/BenTade/ethcal-ui"
-    }
-  ],
   "minimum-stability": "stable",
   "prefer-stable": true
 }

@@ -127,9 +127,9 @@ function _ethcal_ui_convert_to_ethiopian($date, $use_amharic = FALSE) {
   require_once $autoload_file;
   
   // Check if the EthiopianCalendar class is available
-  $eth_calendar_file = DRUPAL_ROOT . '/vendor/bentade/ethcal-ui/php/EthiopianCalendar.php';
+  $eth_calendar_file = __DIR__ . '/lib/php/EthiopianCalendar.php';
   if (!file_exists($eth_calendar_file)) {
-    \Drupal::logger('ethcal_ui')->error('EthiopianCalendar class not found. Please ensure bentade/ethcal-ui package is installed via Composer.');
+    \Drupal::logger('ethcal_ui')->error('EthiopianCalendar class not found. Module files may be corrupted.');
     return '';
   }
   

@@ -2,6 +2,19 @@
 
 All notable changes to the Ethiopian Calendar UI module will be documented in this file.
 
+## [1.0.1] - 2025-10-24
+
+### Changed
+- **Breaking change**: Bundled Ethiopian calendar UI components directly into the module
+- Removed external dependency on `bentade/ethcal-ui` package
+- Now requires `andegna/calender` directly for date conversion
+- Updated library paths to use bundled files in `lib/` directory
+- Updated documentation to reflect bundled components
+
+### Fixed
+- Fixed composer package resolution error where `bentade/ethcal-ui` could not be found
+- Module can now be installed without requiring VCS repository definitions
+
 ## [1.0.0] - 2025-10-24
 
 ### Added
@@ -12,7 +25,7 @@ All notable changes to the Ethiopian Calendar UI module will be documented in th
   - Merged view (Ethiopian with Gregorian in parentheses)
   - Ethiopian-only view
 - Full Amharic language support for month names and numerals
-- JavaScript libraries for Ethiopian calendar conversion via `bentade/ethcal-ui` package
+- Bundled JavaScript libraries for Ethiopian calendar conversion
 - Ethiopian calendar datepicker jQuery plugin
 - Views integration for filtering and displaying dates
 - Template files for all display formats
@@ -31,7 +44,7 @@ All notable changes to the Ethiopian Calendar UI module will be documented in th
 ### Technical Details
 - Uses ISO 8601 date format for storage (Gregorian)
 - Client-side conversion using JavaScript
-- Server-side conversion for rendering via `bentade/ethcal-ui` package
+- Server-side conversion for rendering via bundled `EthiopianCalendar` class
 - Proper field API integration with datetime fields
 - Views data integration via `hook_field_views_data_alter()`
 - Theme system integration with Twig templates
