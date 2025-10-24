@@ -26,6 +26,6 @@
       "url": "https://github.com/BenTade/ethcal-ui"
     }
   ],
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "prefer-stable": true
 }
