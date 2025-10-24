@@ -21,35 +21,55 @@
           return;
         }
         
-        var $hiddenInput = $input.siblings('.ethcal-hidden-value');
         var widgetSettings = $input.data('widgetSettings') || {};
+
+        // Parse initial date if present
+        var initialDate = new Date();
+        if ($input.val()) {
+          var parsedDate = new Date($input.val());
+          if (!isNaN(parsedDate.getTime())) {
+            initialDate = parsedDate;
+          }
+        }
 
         // Create the Ethiopian calendar UI
         var calendar = new window.EthiopianCalendarUI.EthiopianCalendarUI({
           inputElement: this,
+          initialDate: initialDate,
           useAmharic: widgetSettings.useAmharic || false,
           showGregorian: widgetSettings.showGregorian !== false,
           onSelect: function(date) {
             // date.ethiopian contains {year, month, day}
             // date.gregorian contains JavaScript Date object
             
-            // Store the Gregorian date in ISO format for backend
-            if ($hiddenInput.length && date.gregorian) {
+            // Update the input with the Gregorian date in ISO format
+            if (date.gregorian) {
               var year = date.gregorian.getFullYear();
               var month = String(date.gregorian.getMonth() + 1).padStart(2, '0');
               var day = String(date.gregorian.getDate()).padStart(2, '0');
-              $hiddenInput.val(year + '-' + month + '-' + day);
-            }
-            
-            // Update the display input with Ethiopian date
-            if (date.ethiopian) {
-              $input.val(date.ethiopian.day + '/' + date.ethiopian.month + '/' + date.ethiopian.year);
+              $input.val(year + '-' + month + '-' + day);
+              
+              // Trigger change event so Drupal knows the value changed
+              $input.trigger('change');
             }
           }
         });
         
-        // Show calendar when clicking the input
-        $input.on('click', function() {
+        // Prevent the default HTML5 date picker and show Ethiopian calendar
+        $input.on('click focus mousedown', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          calendar.show();
+        });
+        
+        // Also prevent keyboard navigation from opening native picker
+        $input.on('keydown', function(e) {
+          // Allow tab for navigation
+          if (e.key === 'Tab' || e.code === 'Tab') {
+            return;
+          }
+          // Prevent other keys and show our calendar
+          e.preventDefault();
           calendar.show();
         });
       });

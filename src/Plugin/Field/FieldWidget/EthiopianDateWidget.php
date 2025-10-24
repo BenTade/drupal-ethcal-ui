@@ -94,16 +94,13 @@ class EthiopianDateWidget extends WidgetBase {
       $value = substr($value, 0, 10); // Get YYYY-MM-DD part
     }
 
-    $element['#type'] = 'container';
-    $element['#attributes']['class'][] = 'form-item--ethcal-date';
-
-    // Display input field for datepicker
-    $element['display'] = [
-      '#type' => 'textfield',
-      '#default_value' => $this->formatDisplayValue($value),
+    // Use the same structure as core datetime widget for consistent appearance
+    $element['value'] = [
+      '#type' => 'date',
+      '#default_value' => $value,
+      '#date_date_format' => 'Y-m-d',
       '#attributes' => [
         'class' => ['ethcal-datepicker-input'],
-        'readonly' => 'readonly',
         'data-widget-settings' => json_encode([
           'useAmharic' => $this->getSetting('use_amharic'),
           'showGregorian' => !$this->getSetting('ethiopian_only') && $this->getSetting('show_gregorian'),
@@ -116,47 +113,7 @@ class EthiopianDateWidget extends WidgetBase {
       ],
     ];
 
-    // Hidden field to store the actual value
-    $element['value'] = [
-      '#type' => 'hidden',
-      '#default_value' => $value,
-      '#attributes' => [
-        'class' => ['ethcal-hidden-value'],
-      ],
-    ];
-
     return $element;
-  }
-
-  /**
-   * Format the display value for the input field.
-   *
-   * @param string $value
-   *   The stored ISO date value.
-   *
-   * @return string
-   *   Formatted display value.
-   */
-  protected function formatDisplayValue($value) {
-    if (empty($value)) {
-      return '';
-    }
-
-    // Parse the ISO date
-    $date_parts = explode('-', $value);
-    if (count($date_parts) !== 3) {
-      return '';
-    }
-
-    try {
-      $gregorian_date = new \DateTime($value);
-      // This would ideally use the EthiopianCalendar JavaScript library
-      // For now, we'll just show the Gregorian date
-      return $gregorian_date->format('Y-m-d');
-    }
-    catch (\Exception $e) {
-      return '';
-    }
   }
 
   /**
