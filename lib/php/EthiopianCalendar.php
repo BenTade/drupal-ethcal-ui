@@ -10,10 +10,9 @@
  * Ethiopian calendar calculations and exposes all its functionalities.
  */
 
-// Check if composer autoload exists
-if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-    require_once __DIR__ . '/../vendor/autoload.php';
-}
+// Note: This class expects Composer autoloader to be already loaded.
+// In Drupal context, the module handles autoloading before requiring this file.
+// If used standalone, ensure vendor/autoload.php is loaded before requiring this file.
 
 use Andegna\DateTime as AndegnaDateTime;
 use Andegna\DateTimeFactory;
@@ -38,7 +37,7 @@ class EthiopianCalendar {
      */
     public function toEthiopian($gregorianDate) {
         if (is_string($gregorianDate)) {
-            $gregorianDate = new DateTime($gregorianDate);
+            $gregorianDate = new \DateTime($gregorianDate);
         }
         
         $ethiopic = new AndegnaDateTime($gregorianDate);
@@ -58,7 +57,7 @@ class EthiopianCalendar {
      */
     public function toEthiopianDateTime($gregorianDate) {
         if (is_string($gregorianDate)) {
-            $gregorianDate = new DateTime($gregorianDate);
+            $gregorianDate = new \DateTime($gregorianDate);
         }
         
         return new AndegnaDateTime($gregorianDate);
