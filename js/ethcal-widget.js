@@ -23,9 +23,19 @@
         
         var widgetSettings = $input.data('widgetSettings') || {};
 
+        // Parse initial date if present
+        var initialDate = new Date();
+        if ($input.val()) {
+          var parsedDate = new Date($input.val());
+          if (!isNaN(parsedDate.getTime())) {
+            initialDate = parsedDate;
+          }
+        }
+
         // Create the Ethiopian calendar UI
         var calendar = new window.EthiopianCalendarUI.EthiopianCalendarUI({
           inputElement: this,
+          initialDate: initialDate,
           useAmharic: widgetSettings.useAmharic || false,
           showGregorian: widgetSettings.showGregorian !== false,
           onSelect: function(date) {
@@ -45,19 +55,24 @@
           }
         });
         
-        // Show calendar when clicking or focusing the input
-        $input.on('click focus', function(e) {
+        // Prevent the default HTML5 date picker and show Ethiopian calendar
+        $input.on('click focus mousedown', function(e) {
           e.preventDefault();
+          e.stopPropagation();
           calendar.show();
+          return false;
         });
         
-        // Prevent the default HTML5 date picker from showing
-        $input.on('mousedown', function(e) {
-          // This prevents the browser's native date picker
-          if (e.target === this) {
-            e.preventDefault();
-            calendar.show();
+        // Also prevent keyboard navigation from opening native picker
+        $input.on('keydown', function(e) {
+          // Allow tab for navigation
+          if (e.keyCode === 9) {
+            return;
           }
+          // Prevent other keys and show our calendar
+          e.preventDefault();
+          calendar.show();
+          return false;
         });
       });
     }

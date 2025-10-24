@@ -13,6 +13,18 @@
   cursor: pointer;
 }
 
+/* Remove native date picker styling */
+.ethcal-datepicker-input::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.ethcal-datepicker-input::-webkit-inner-spin-button,
+.ethcal-datepicker-input::-webkit-clear-button {
+  display: none;
+  -webkit-appearance: none;
+}
+
 .ethcal-datepicker-input:focus {
   outline: none;
   border-color: #0073aa;
