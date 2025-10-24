@@ -20,12 +20,6 @@ Before installing the Ethiopian Calendar UI module, ensure you have:
    composer require drupal/ethcal_ui
    ```
 
-   Or, if installing from the repository:
-   ```bash
-   composer require bentade/ethcal-ui
-   # Then copy the module to modules/custom/ethcal_ui
-   ```
-
 2. **Enable the module:**
    ```bash
    drush en ethcal_ui -y
@@ -38,7 +32,7 @@ Before installing the Ethiopian Calendar UI module, ensure you have:
 
 ### Method 2: Manual Installation
 
-**Important**: This module requires the `bentade/ethcal-ui` package. You must install dependencies via Composer even for manual installation.
+**Important**: This module requires the `andegna/calender` package. You must install dependencies via Composer even for manual installation.
 
 1. **Copy the module to your Drupal installation:**
    ```bash
@@ -50,12 +44,7 @@ Before installing the Ethiopian Calendar UI module, ensure you have:
 2. **Install dependencies:**
    ```bash
    cd /path/to/your/drupal
-   composer require bentade/ethcal-ui
-   ```
-
-3. **Enable the module:**
-   ```bash
-   drush en ethcal_ui -y
+   composer require andegna/calender
    ```
 
 3. **Enable the module:**
@@ -75,7 +64,7 @@ Before installing the Ethiopian Calendar UI module, ensure you have:
 1. **Install dependencies:**
    ```bash
    cd /path/to/your/drupal
-   composer require bentade/ethcal-ui
+   composer require andegna/calender
    ```
 
 2. **Copy the module:**
@@ -174,8 +163,8 @@ To test the module:
 
 ### Missing dependencies error
 - Run `composer install` in your Drupal root directory
-- Ensure `bentade/ethcal-ui` package is installed: `composer show bentade/ethcal-ui`
-- Check that `vendor/bentade/ethcal-ui` directory exists
+- Ensure `andegna/calender` package is installed: `composer show andegna/calender`
+- Check that `vendor/andegna/calender` directory exists
 
 ### Module doesn't appear in Extend page
 - Ensure the module is in the correct location: `modules/custom/ethcal_ui/`
@@ -184,7 +173,7 @@ To test the module:
 - Clear cache: `drush cr`
 
 ### Datepicker doesn't show
-- Verify `vendor/bentade/ethcal-ui/dist/ethcal-ui.umd.js` exists
+- Verify `modules/custom/ethcal_ui/lib/js/ethcal-ui.umd.js` exists
 - Clear cache: `drush cr`
 - Check browser console for JavaScript errors
 - Ensure jQuery is loaded on the page
