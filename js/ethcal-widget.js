@@ -21,7 +21,6 @@
           return;
         }
         
-        var $hiddenInput = $input.siblings('.ethcal-hidden-value');
         var widgetSettings = $input.data('widgetSettings') || {};
 
         // Create the Ethiopian calendar UI
@@ -33,24 +32,32 @@
             // date.ethiopian contains {year, month, day}
             // date.gregorian contains JavaScript Date object
             
-            // Store the Gregorian date in ISO format for backend
-            if ($hiddenInput.length && date.gregorian) {
+            // Update the input with the Gregorian date in ISO format
+            if (date.gregorian) {
               var year = date.gregorian.getFullYear();
               var month = String(date.gregorian.getMonth() + 1).padStart(2, '0');
               var day = String(date.gregorian.getDate()).padStart(2, '0');
-              $hiddenInput.val(year + '-' + month + '-' + day);
-            }
-            
-            // Update the display input with Ethiopian date
-            if (date.ethiopian) {
-              $input.val(date.ethiopian.day + '/' + date.ethiopian.month + '/' + date.ethiopian.year);
+              $input.val(year + '-' + month + '-' + day);
+              
+              // Trigger change event so Drupal knows the value changed
+              $input.trigger('change');
             }
           }
         });
         
-        // Show calendar when clicking the input
-        $input.on('click', function() {
+        // Show calendar when clicking or focusing the input
+        $input.on('click focus', function(e) {
+          e.preventDefault();
           calendar.show();
+        });
+        
+        // Prevent the default HTML5 date picker from showing
+        $input.on('mousedown', function(e) {
+          // This prevents the browser's native date picker
+          if (e.target === this) {
+            e.preventDefault();
+            calendar.show();
+          }
         });
       });
     }
