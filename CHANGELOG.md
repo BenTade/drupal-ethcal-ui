@@ -2,6 +2,14 @@
 
 All notable changes to the Ethiopian Calendar UI module will be documented in this file.
 
+## [0.1.0] - 2025-10-24
+
+### Release
+- First stable release of Ethiopian Calendar UI module
+- Production-ready version with complete feature set
+- All core functionality tested and verified
+- Documentation finalized
+
 ## [2.0.0] - 2025-10-21
 
 ### Changed - BREAKING
