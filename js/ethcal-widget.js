@@ -60,19 +60,17 @@
           e.preventDefault();
           e.stopPropagation();
           calendar.show();
-          return false;
         });
         
         // Also prevent keyboard navigation from opening native picker
         $input.on('keydown', function(e) {
           // Allow tab for navigation
-          if (e.keyCode === 9) {
+          if (e.key === 'Tab' || e.code === 'Tab') {
             return;
           }
           // Prevent other keys and show our calendar
           e.preventDefault();
           calendar.show();
-          return false;
         });
       });
     }
