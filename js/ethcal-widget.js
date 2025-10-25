@@ -1,10 +1,14 @@
-/**
- * @file
- * Drupal behavior for Ethiopian Calendar widget.
- */
-
 (function ($, Drupal, drupalSettings) {
   'use strict';
+
+  // Constants
+  var ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}/;
+  
+  // Month names for display
+  var ETH_MONTH_NAMES = ['Meskerem', 'Tikimt', 'Hidar', 'Tahsas', 'Tir', 'Yekatit', 
+                         'Megabit', 'Miazia', 'Ginbot', 'Sene', 'Hamle', 'Nehase', 'Pagume'];
+  var GREG_MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June',
+                          'July', 'August', 'September', 'October', 'November', 'December'];
 
   /**
    * Attach Ethiopian datepicker to field widgets.
@@ -29,18 +33,12 @@
         var initialValue = $valueInput.val();
         
         // Check if the value field contains a date in ISO format (YYYY-MM-DD)
-        if (initialValue && /^\d{4}-\d{2}-\d{2}/.test(initialValue)) {
+        if (initialValue && ISO_DATE_PATTERN.test(initialValue)) {
           var parsedDate = new Date(initialValue);
           if (!isNaN(parsedDate.getTime())) {
             initialDate = parsedDate;
           }
         }
-        
-        // Get month names for display
-        var ethMonthNames = ['Meskerem', 'Tikimt', 'Hidar', 'Tahsas', 'Tir', 'Yekatit', 
-                             'Megabit', 'Miazia', 'Ginbot', 'Sene', 'Hamle', 'Nehase', 'Pagume'];
-        var gregMonthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                              'July', 'August', 'September', 'October', 'November', 'December'];
 
         // Format display text for both calendars
         var formatDisplayText = function(date) {
@@ -51,11 +49,11 @@
           var gregDate = date.gregorian;
           var ethDate = date.ethiopian;
           
-          var gregText = gregMonthNames[gregDate.getMonth()] + ' ' + 
+          var gregText = GREG_MONTH_NAMES[gregDate.getMonth()] + ' ' + 
                          gregDate.getDate() + ', ' + 
                          gregDate.getFullYear();
           
-          var ethText = ethMonthNames[ethDate.month - 1] + ' ' + 
+          var ethText = ETH_MONTH_NAMES[ethDate.month - 1] + ' ' + 
                        ethDate.day + ', ' + 
                        ethDate.year;
           
@@ -63,7 +61,8 @@
           if (widgetSettings.displayBothCalendars) {
             return ethText + ' (' + gregText + ')';
           } else {
-            return gregText;
+            // When displaying single calendar, show Ethiopian date
+            return ethText;
           }
         };
 
@@ -97,7 +96,7 @@
         });
         
         // Display initial value in formatted text if date is present
-        if (initialValue && /^\d{4}-\d{2}-\d{2}/.test(initialValue)) {
+        if (initialValue && ISO_DATE_PATTERN.test(initialValue)) {
           var ethCalendar = new window.EthiopianCalendarUI.EthiopianCalendar();
           var parsedDate = new Date(initialValue);
           if (!isNaN(parsedDate.getTime())) {
