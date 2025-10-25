@@ -94,17 +94,35 @@ class EthiopianDateWidget extends WidgetBase {
       $value = substr($value, 0, 10); // Get YYYY-MM-DD part
     }
 
-    // Use the same structure as core datetime widget for consistent appearance
-    $element['value'] = [
-      '#type' => 'date',
-      '#default_value' => $value,
-      '#date_date_format' => 'Y-m-d',
+    // Determine if we should show both calendars
+    $show_both_calendars = !$this->getSetting('ethiopian_only') && $this->getSetting('show_gregorian');
+
+    // Create a container for the widget
+    $element['#type'] = 'container';
+    $element['#attributes']['class'][] = 'ethcal-widget-container';
+
+    // Use text input for display (shows both calendars)
+    $element['display'] = [
+      '#type' => 'textfield',
+      '#default_value' => '',
       '#attributes' => [
         'class' => ['ethcal-datepicker-input'],
         'data-widget-settings' => json_encode([
           'useAmharic' => $this->getSetting('use_amharic'),
-          'showGregorian' => !$this->getSetting('ethiopian_only') && $this->getSetting('show_gregorian'),
+          'showGregorian' => $show_both_calendars,
+          'displayBothCalendars' => $show_both_calendars,
         ]),
+        'readonly' => 'readonly',
+        'placeholder' => $this->t('Select a date'),
+      ],
+    ];
+
+    // Hidden field to store the actual ISO date for form submission
+    $element['value'] = [
+      '#type' => 'hidden',
+      '#default_value' => $value,
+      '#attributes' => [
+        'class' => ['ethcal-datepicker-value'],
       ],
       '#attached' => [
         'library' => [
