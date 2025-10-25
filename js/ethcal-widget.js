@@ -37,7 +37,10 @@
           inputElement: this,
           initialDate: initialDate,
           useAmharic: widgetSettings.useAmharic || false,
+          useEthiopicNumbers: widgetSettings.useEthiopicNumbers || false,
           showGregorian: widgetSettings.showGregorian !== false,
+          mergedView: widgetSettings.mergedView || false,
+          primaryCalendar: widgetSettings.primaryCalendar || 'ethiopian',
           onSelect: function(date) {
             // date.ethiopian contains {year, month, day}
             // date.gregorian contains JavaScript Date object

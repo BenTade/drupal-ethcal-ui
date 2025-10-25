@@ -25,6 +25,7 @@ class EthiopianDateOnlyFormatter extends FormatterBase {
   public static function defaultSettings() {
     return [
       'use_amharic' => TRUE,
+      'date_format' => 'long',
     ] + parent::defaultSettings();
   }
 
@@ -41,6 +42,17 @@ class EthiopianDateOnlyFormatter extends FormatterBase {
       '#description' => $this->t('Display dates using Amharic script.'),
     ];
 
+    $elements['date_format'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Date format'),
+      '#options' => [
+        'short' => $this->t('Short (1/1/2015)'),
+        'medium' => $this->t('Medium (1 Meskerem 2015)'),
+        'long' => $this->t('Long (Meskerem 1, 2015)'),
+      ],
+      '#default_value' => $this->getSetting('date_format'),
+    ];
+
     return $elements;
   }
 
@@ -54,7 +66,9 @@ class EthiopianDateOnlyFormatter extends FormatterBase {
       $summary[] = $this->t('Amharic');
     }
 
-    $summary[] = $this->t('Ethiopian calendar only');
+    $summary[] = $this->t('Ethiopian calendar only (@format)', [
+      '@format' => $this->getSetting('date_format'),
+    ]);
 
     return $summary;
   }
@@ -77,6 +91,7 @@ class EthiopianDateOnlyFormatter extends FormatterBase {
           '#theme' => 'ethcal_date_only',
           '#gregorian_date' => $date_value,
           '#use_amharic' => $this->getSetting('use_amharic'),
+          '#date_format' => $this->getSetting('date_format'),
           '#attached' => [
             'library' => [
               'ethcal_ui/formatter',
