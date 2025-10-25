@@ -10,6 +10,9 @@
   var GREG_MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June',
                           'July', 'August', 'September', 'October', 'November', 'December'];
 
+  // Ethiopian calendar instance for date conversions (reusable)
+  var ethCalendar = null;
+
   /**
    * Attach Ethiopian datepicker to field widgets.
    */
@@ -19,11 +22,18 @@
         var $displayInput = $(this);
         var $valueInput = $displayInput.siblings('.ethcal-datepicker-value');
         
-        // Check if the EthiopianCalendarUI class is available
+        // Check if the EthiopianCalendarUI library is available
+        // The library exports EthiopianCalendarUI object with both EthiopianCalendar
+        // and EthiopianCalendarUI classes
         if (typeof window.EthiopianCalendarUI === 'undefined' || 
             typeof window.EthiopianCalendarUI.EthiopianCalendarUI === 'undefined') {
           console.error('EthiopianCalendarUI library is not loaded.');
           return;
+        }
+        
+        // Initialize shared Ethiopian calendar instance if not already created
+        if (!ethCalendar) {
+          ethCalendar = new window.EthiopianCalendarUI.EthiopianCalendar();
         }
         
         var widgetSettings = $displayInput.data('widgetSettings') || {};
@@ -97,7 +107,6 @@
         
         // Display initial value in formatted text if date is present
         if (initialValue && ISO_DATE_PATTERN.test(initialValue)) {
-          var ethCalendar = new window.EthiopianCalendarUI.EthiopianCalendar();
           var parsedDate = new Date(initialValue);
           if (!isNaN(parsedDate.getTime())) {
             var ethDate = ethCalendar.toEthiopian(parsedDate);
