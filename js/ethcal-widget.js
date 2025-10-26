@@ -106,6 +106,14 @@
           calendar.show();
         });
         
+        // Clear ISO date cache if user manually changes the field
+        $input.on('input', function() {
+          // Only clear if not in Gregorian mode (since Gregorian mode shows ISO directly)
+          if (widgetSettings.primaryCalendar !== 'gregorian') {
+            $input.removeAttr('data-iso-date');
+          }
+        });
+        
         // Handle form submission - convert display value to ISO format
         var $form = $input.closest('form');
         if ($form.length) {
