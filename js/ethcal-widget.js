@@ -25,34 +25,43 @@
 
         // Parse initial date if present
         var initialDate = new Date();
+        var displayValue = '';
+        
         if ($input.val()) {
           var parsedDate = new Date($input.val());
           if (!isNaN(parsedDate.getTime())) {
             initialDate = parsedDate;
             
-            // If primary calendar is Ethiopian, convert display to Ethiopian format
-            if (widgetSettings.primaryCalendar !== 'gregorian') {
-              // Store the ISO date
-              var isoValue = $input.val();
-              $input.attr('data-iso-date', isoValue);
-              
-              // Convert to Ethiopian format for display
+            // Store the ISO date for form submission
+            $input.attr('data-iso-date', $input.val());
+            
+            // Set display format based on settings
+            if (widgetSettings.primaryCalendar === 'gregorian') {
+              // Show Gregorian date in ISO format (YYYY-MM-DD)
+              displayValue = $input.val();
+            } else {
+              // Show Ethiopian date by default
               if (typeof window.EthiopianCalendarUI.EthiopianCalendar !== 'undefined') {
                 var ethCalendar = new window.EthiopianCalendarUI.EthiopianCalendar();
                 var ethDate = ethCalendar.toEthiopian(parsedDate);
-                $input.val(ethDate.day + '/' + ethDate.month + '/' + ethDate.year);
+                var day = widgetSettings.useEthiopicNumbers ? ethCalendar.toEthiopicNumeral(ethDate.day) : ethDate.day;
+                var month = widgetSettings.useEthiopicNumbers ? ethCalendar.toEthiopicNumeral(ethDate.month) : ethDate.month;
+                var year = widgetSettings.useEthiopicNumbers ? ethCalendar.toEthiopicNumeral(ethDate.year) : ethDate.year;
+                displayValue = day + '/' + month + '/' + year;
               }
             }
+            
+            $input.val(displayValue);
           }
         }
 
-        // Create the Ethiopian calendar UI
-        var calendar = new window.EthiopianCalendarUI.EthiopianCalendarUI({
+        // Create the Ethiopian calendar UI with proper configuration
+        var calendarOptions = {
           inputElement: this,
           initialDate: initialDate,
           useAmharic: widgetSettings.useAmharic || false,
           useEthiopicNumbers: widgetSettings.useEthiopicNumbers || false,
-          showGregorian: widgetSettings.showGregorian !== false,
+          showGregorian: !widgetSettings.ethiopianOnly && (widgetSettings.showGregorian || widgetSettings.mergedView),
           mergedView: widgetSettings.mergedView || false,
           primaryCalendar: widgetSettings.primaryCalendar || 'ethiopian',
           onSelect: function(date) {
@@ -72,8 +81,12 @@
                 // Show Gregorian date in ISO format (YYYY-MM-DD)
                 displayValue = isoDate;
               } else {
-                // Default to Ethiopian - Show Ethiopian date
-                displayValue = date.ethiopian.day + '/' + date.ethiopian.month + '/' + date.ethiopian.year;
+                // Show Ethiopian date with proper formatting
+                var ethCalendar = new window.EthiopianCalendarUI.EthiopianCalendar();
+                var ethDay = widgetSettings.useEthiopicNumbers ? ethCalendar.toEthiopicNumeral(date.ethiopian.day) : date.ethiopian.day;
+                var ethMonth = widgetSettings.useEthiopicNumbers ? ethCalendar.toEthiopicNumeral(date.ethiopian.month) : date.ethiopian.month;
+                var ethYear = widgetSettings.useEthiopicNumbers ? ethCalendar.toEthiopicNumeral(date.ethiopian.year) : date.ethiopian.year;
+                displayValue = ethDay + '/' + ethMonth + '/' + ethYear;
               }
               
               // Set the display value
@@ -86,32 +99,27 @@
               $input.trigger('change');
             }
           }
-        });
+        };
         
-        // Prevent the default HTML5 date picker and show Ethiopian calendar
-        $input.on('click focus mousedown', function(e) {
+        var calendar = new window.EthiopianCalendarUI.EthiopianCalendarUI(calendarOptions);
+        
+        // Make the field clickable to show the calendar
+        $input.on('click focus', function(e) {
           e.preventDefault();
-          e.stopPropagation();
           calendar.show();
+          return false;
         });
         
-        // Also prevent keyboard navigation from opening native picker
+        // Prevent keyboard input and show calendar instead
         $input.on('keydown', function(e) {
           // Allow tab for navigation
           if (e.key === 'Tab' || e.code === 'Tab') {
-            return;
+            return true;
           }
           // Prevent other keys and show our calendar
           e.preventDefault();
           calendar.show();
-        });
-        
-        // Clear ISO date cache if user manually changes the field
-        $input.on('input', function() {
-          // Only clear if not in Gregorian mode (since Gregorian mode shows ISO directly)
-          if (widgetSettings.primaryCalendar !== 'gregorian') {
-            $input.removeAttr('data-iso-date');
-          }
+          return false;
         });
         
         // Handle form submission - convert display value to ISO format

@@ -3,25 +3,45 @@
  * Styles for Ethiopian Calendar field widget.
  */
 
+/* Make the input look like core date field */
 .ethcal-datepicker-input {
   max-width: 400px;
-  padding: 8px 12px;
+  padding: 4px 6px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 2px;
   font-size: 14px;
+  font-family: inherit;
   cursor: pointer;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23555' d='M11 3h1c1.1 0 2 .9 2 2v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h1V1h2v2h4V1h2v2zm2 10V7H3v6c0 .6.4 1 1 1h8c.6 0 1-.4 1-1zm-8-4h2v2H5V9zm3 0h2v2H8V9zm3 0h2v2h-2V9z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px 16px;
+  padding-right: 30px;
 }
 
-/* Remove native date picker styling */
-.ethcal-datepicker-input::-webkit-calendar-picker-indicator {
-  display: none;
-  -webkit-appearance: none;
+/* Claro theme compatibility */
+.claro .ethcal-datepicker-input {
+  padding: 8px 12px 8px 12px;
+  border: 1px solid #8e929c;
+  border-radius: 2px;
+  font-size: 14px;
+  line-height: 1.5;
+  padding-right: 36px;
 }
 
-.ethcal-datepicker-input::-webkit-inner-spin-button,
-.ethcal-datepicker-input::-webkit-clear-button {
-  display: none;
-  -webkit-appearance: none;
+/* Gin theme compatibility */
+.gin--classic-toolbar .ethcal-datepicker-input,
+.gin--horizontal-toolbar .ethcal-datepicker-input,
+.gin--vertical-toolbar .ethcal-datepicker-input {
+  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+  border: 1px solid var(--gin-border-color-form-element, #c7c7c7);
+  border-radius: var(--gin-border-size-form-element, 3px);
+  font-size: var(--gin-font-size-s, 0.875rem);
+}
+
+.ethcal-datepicker-input:hover {
+  border-color: #999;
 }
 
 .ethcal-datepicker-input:focus {
@@ -30,8 +50,23 @@
   box-shadow: 0 0 0 1px #0073aa;
 }
 
-.ethcal-hidden-value {
-  display: none;
+/* Claro theme focus */
+.claro .ethcal-datepicker-input:focus {
+  border-color: #0036b1;
+  box-shadow: inset 0 0 0 1px #0036b1;
+}
+
+/* Gin theme focus */
+.gin--classic-toolbar .ethcal-datepicker-input:focus,
+.gin--horizontal-toolbar .ethcal-datepicker-input:focus,
+.gin--vertical-toolbar .ethcal-datepicker-input:focus {
+  border-color: var(--gin-color-primary, #0073aa);
+  box-shadow: 0 0 0 2px var(--gin-bg-layer), 0 0 0 4px var(--gin-color-primary, #0073aa);
+}
+
+.ethcal-datepicker-input[readonly] {
+  cursor: pointer;
+  background-color: #fff;
 }
 
 .form-item--ethcal-date {
@@ -48,4 +83,31 @@
   margin-top: 0.5em;
   font-size: 0.9em;
   color: #666;
+}
+
+/* Helper text styling */
+.ethcal-datepicker-input + .description {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.claro .ethcal-datepicker-input + .description {
+  color: #5d6069;
+  font-size: 0.79rem;
+}
+
+/* Error state */
+.ethcal-datepicker-input.error {
+  border-color: #e32;
+}
+
+.claro .ethcal-datepicker-input.error {
+  border-color: #d72222;
+}
+
+/* Required field indicator */
+.form-required + .ethcal-datepicker-input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23555' d='M11 3h1c1.1 0 2 .9 2 2v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h1V1h2v2h4V1h2v2zm2 10V7H3v6c0 .6.4 1 1 1h8c.6 0 1-.4 1-1zm-8-4h2v2H5V9zm3 0h2v2H8V9zm3 0h2v2h-2V9z'/%3E%3C/svg%3E");
 }
