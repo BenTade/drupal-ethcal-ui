@@ -57,7 +57,7 @@ class EthiopianDateWidget extends WidgetBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Merged calendar view'),
       '#default_value' => $this->getSetting('merged_view'),
-      '#description' => $this->t('Show both calendars merged in a single view with dual date display.'),
+      '#description' => $this->t('Show both calendars merged in a single view with dual date display on each day cell.'),
     ];
 
     $elements['primary_calendar'] = [
@@ -68,7 +68,7 @@ class EthiopianDateWidget extends WidgetBase {
         'gregorian' => $this->t('Gregorian'),
       ],
       '#default_value' => $this->getSetting('primary_calendar'),
-      '#description' => $this->t('Which calendar to use as primary in merged view.'),
+      '#description' => $this->t('Which calendar to use as primary in merged view. The primary calendar determines the main date shown in each cell.'),
       '#states' => [
         'visible' => [
           ':input[name="fields[' . $this->fieldDefinition->getName() . '][settings_edit_form][settings][merged_view]"]' => ['checked' => TRUE],
@@ -78,9 +78,9 @@ class EthiopianDateWidget extends WidgetBase {
 
     $elements['show_gregorian'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Show Gregorian date alongside'),
+      '#title' => $this->t('Show Gregorian calendar side-by-side'),
       '#default_value' => $this->getSetting('show_gregorian'),
-      '#description' => $this->t('Display both Ethiopian and Gregorian dates in the input field.'),
+      '#description' => $this->t('Display both Ethiopian and Gregorian calendars side-by-side in the datepicker popup. This provides two separate calendars for easier date selection.'),
       '#states' => [
         'visible' => [
           ':input[name="fields[' . $this->fieldDefinition->getName() . '][settings_edit_form][settings][merged_view]"]' => ['checked' => FALSE],
@@ -118,16 +118,19 @@ class EthiopianDateWidget extends WidgetBase {
     }
 
     if ($this->getSetting('merged_view')) {
-      $summary[] = $this->t('Merged view (@primary primary)', [
+      $summary[] = $this->t('Merged calendar view (@primary primary)', [
         '@primary' => $this->getSetting('primary_calendar'),
       ]);
     }
     elseif ($this->getSetting('show_gregorian')) {
-      $summary[] = $this->t('Show Gregorian date');
+      $summary[] = $this->t('Side-by-side calendar view (Ethiopian + Gregorian)');
+    }
+    else {
+      $summary[] = $this->t('Ethiopian calendar only');
     }
 
     if ($this->getSetting('ethiopian_only')) {
-      $summary[] = $this->t('Ethiopian calendar only');
+      $summary[] = $this->t('No Gregorian reference');
     }
 
     return $summary;
@@ -146,17 +149,27 @@ class EthiopianDateWidget extends WidgetBase {
       $value = substr($value, 0, 10); // Get YYYY-MM-DD part
     }
 
-    // Use the same structure as core datetime widget for consistent appearance
+    // Determine if we should show side-by-side calendars
+    $show_side_by_side = !$this->getSetting('merged_view') && 
+                         !$this->getSetting('ethiopian_only') && 
+                         $this->getSetting('show_gregorian');
+
+    // Use a text input styled like core date field for better control
+    // This allows the Ethiopian calendar picker to work properly
     $element['value'] = [
-      '#type' => 'date',
+      '#type' => 'textfield',
       '#default_value' => $value,
-      '#date_date_format' => 'Y-m-d',
+      '#size' => 20,
+      '#maxlength' => 20,
       '#attributes' => [
-        'class' => ['ethcal-datepicker-input'],
+        'class' => ['ethcal-datepicker-input', 'form-date'],
+        'placeholder' => $this->t('YYYY-MM-DD'),
+        'readonly' => 'readonly',
         'data-widget-settings' => json_encode([
           'useAmharic' => $this->getSetting('use_amharic'),
           'useEthiopicNumbers' => $this->getSetting('use_ethiopic_numbers'),
-          'showGregorian' => !$this->getSetting('ethiopian_only') && $this->getSetting('show_gregorian'),
+          'showGregorian' => $show_side_by_side || $this->getSetting('merged_view'),
+          'ethiopianOnly' => $this->getSetting('ethiopian_only'),
           'mergedView' => $this->getSetting('merged_view'),
           'primaryCalendar' => $this->getSetting('primary_calendar'),
         ]),
@@ -167,6 +180,9 @@ class EthiopianDateWidget extends WidgetBase {
         ],
       ],
     ];
+
+    // Add a description showing the date format
+    $element['value']['#description'] = $this->t('Click to open the Ethiopian calendar picker.');
 
     return $element;
   }
