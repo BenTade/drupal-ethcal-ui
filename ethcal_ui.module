@@ -39,6 +39,10 @@ function ethcal_ui_theme($existing, $type, $theme, $path) {
         'gregorian_date' => NULL,
         'use_amharic' => FALSE,
         'date_format' => 'medium',
+        'show_ethiopian_date' => TRUE,
+        'show_gregorian_date' => TRUE,
+        'ethiopian_date_format' => 'long',
+        'gregorian_date_format' => 'medium',
       ],
       'template' => 'ethcal-date-sidebyside',
     ],
@@ -46,6 +50,8 @@ function ethcal_ui_theme($existing, $type, $theme, $path) {
       'variables' => [
         'gregorian_date' => NULL,
         'use_amharic' => FALSE,
+        'ethiopian_date_format' => 'medium',
+        'gregorian_date_format' => 'medium',
       ],
       'template' => 'ethcal-date-merged',
     ],
@@ -53,6 +59,7 @@ function ethcal_ui_theme($existing, $type, $theme, $path) {
       'variables' => [
         'gregorian_date' => NULL,
         'use_amharic' => FALSE,
+        'date_format' => 'long',
       ],
       'template' => 'ethcal-date-only',
     ],
@@ -65,14 +72,30 @@ function ethcal_ui_theme($existing, $type, $theme, $path) {
 function template_preprocess_ethcal_date_sidebyside(&$variables) {
   $gregorian_date = $variables['gregorian_date'];
   $use_amharic = $variables['use_amharic'];
+  $show_ethiopian_date = $variables['show_ethiopian_date'] ?? TRUE;
+  $show_gregorian_date = $variables['show_gregorian_date'] ?? TRUE;
+  $ethiopian_date_format = $variables['ethiopian_date_format'] ?? 'long';
+  $gregorian_date_format = $variables['gregorian_date_format'] ?? 'medium';
 
   if (!empty($gregorian_date)) {
     try {
       $date = new DateTime($gregorian_date);
-      $variables['gregorian_formatted'] = $date->format('F j, Y');
       
-      // Use the ethcal-ui package's EthiopianCalendar class
-      $variables['ethiopian_date'] = _ethcal_ui_convert_to_ethiopian($date, $use_amharic);
+      // Format Gregorian date
+      if ($show_gregorian_date) {
+        $variables['gregorian_formatted'] = _ethcal_ui_format_gregorian_date($date, $gregorian_date_format);
+      }
+      else {
+        $variables['gregorian_formatted'] = '';
+      }
+      
+      // Format Ethiopian date
+      if ($show_ethiopian_date) {
+        $variables['ethiopian_date'] = _ethcal_ui_convert_to_ethiopian($date, $use_amharic, $ethiopian_date_format);
+      }
+      else {
+        $variables['ethiopian_date'] = '';
+      }
     }
     catch (Exception $e) {
       $variables['gregorian_formatted'] = '';
@@ -85,7 +108,24 @@ function template_preprocess_ethcal_date_sidebyside(&$variables) {
  * Prepares variables for ethcal_date_merged template.
  */
 function template_preprocess_ethcal_date_merged(&$variables) {
-  template_preprocess_ethcal_date_sidebyside($variables);
+  $gregorian_date = $variables['gregorian_date'];
+  $use_amharic = $variables['use_amharic'];
+  $ethiopian_date_format = $variables['ethiopian_date_format'] ?? 'medium';
+  $gregorian_date_format = $variables['gregorian_date_format'] ?? 'medium';
+
+  if (!empty($gregorian_date)) {
+    try {
+      $date = new DateTime($gregorian_date);
+      $variables['gregorian_formatted'] = _ethcal_ui_format_gregorian_date($date, $gregorian_date_format);
+      
+      // Use the ethcal-ui package's EthiopianCalendar class
+      $variables['ethiopian_date'] = _ethcal_ui_convert_to_ethiopian($date, $use_amharic, $ethiopian_date_format);
+    }
+    catch (Exception $e) {
+      $variables['gregorian_formatted'] = '';
+      $variables['ethiopian_date'] = '';
+    }
+  }
 }
 
 /**
@@ -94,11 +134,12 @@ function template_preprocess_ethcal_date_merged(&$variables) {
 function template_preprocess_ethcal_date_only(&$variables) {
   $gregorian_date = $variables['gregorian_date'];
   $use_amharic = $variables['use_amharic'];
+  $date_format = $variables['date_format'] ?? 'long';
 
   if (!empty($gregorian_date)) {
     try {
       $date = new DateTime($gregorian_date);
-      $variables['ethiopian_date'] = _ethcal_ui_convert_to_ethiopian($date, $use_amharic);
+      $variables['ethiopian_date'] = _ethcal_ui_convert_to_ethiopian($date, $use_amharic, $date_format);
     }
     catch (Exception $e) {
       $variables['ethiopian_date'] = '';
@@ -111,7 +152,7 @@ function template_preprocess_ethcal_date_only(&$variables) {
  *
  * Uses the ethcal-ui package's EthiopianCalendar class.
  */
-function _ethcal_ui_convert_to_ethiopian($date, $use_amharic = FALSE) {
+function _ethcal_ui_convert_to_ethiopian($date, $use_amharic = FALSE, $format = 'medium') {
   // Ensure Composer autoload is available
   $autoload_file = DRUPAL_ROOT . '/vendor/autoload.php';
   if (!file_exists($autoload_file)) {
@@ -139,22 +180,44 @@ function _ethcal_ui_convert_to_ethiopian($date, $use_amharic = FALSE) {
     $calendar = new EthiopianCalendar();
     $ethDate = $calendar->toEthiopian($date);
     
-    // Format the date based on Amharic preference
-    if ($use_amharic) {
-      // Use andegna/calender's Amharic formatting if available
-      try {
-        $ethDT = $calendar->toEthiopianDateTime($date);
-        return $ethDT->format(\Andegna\Constants::DATE_ETHIOPIAN);
-      }
-      catch (Exception $e) {
-        // Fallback to simple formatting
-        return _ethcal_ui_to_amharic_number($ethDate['day']) . ' ' . 
-               _ethcal_ui_get_amharic_month_name($ethDate['month']) . ' ' . 
-               _ethcal_ui_to_amharic_number($ethDate['year']);
-      }
-    }
-    else {
-      return $calendar->format($ethDate, 'd M y');
+    // Get month name
+    $month_name = _ethcal_ui_get_month_name($ethDate['month'], $use_amharic);
+    
+    // Format the date based on format preference
+    switch ($format) {
+      case 'short':
+        // e.g., "1/1/2015" or "፩/፩/፪፻፲፭"
+        if ($use_amharic) {
+          return _ethcal_ui_to_amharic_number($ethDate['day']) . '/' . 
+                 _ethcal_ui_to_amharic_number($ethDate['month']) . '/' . 
+                 _ethcal_ui_to_amharic_number($ethDate['year']);
+        }
+        else {
+          return $ethDate['day'] . '/' . $ethDate['month'] . '/' . $ethDate['year'];
+        }
+        
+      case 'medium':
+        // e.g., "1 Meskerem 2015" or "፩ መስከረም ፪፻፲፭"
+        if ($use_amharic) {
+          return _ethcal_ui_to_amharic_number($ethDate['day']) . ' ' . 
+                 $month_name . ' ' . 
+                 _ethcal_ui_to_amharic_number($ethDate['year']);
+        }
+        else {
+          return $ethDate['day'] . ' ' . $month_name . ' ' . $ethDate['year'];
+        }
+        
+      case 'long':
+      default:
+        // e.g., "Meskerem 1, 2015" or "መስከረም ፩, ፪፻፲፭"
+        if ($use_amharic) {
+          return $month_name . ' ' . 
+                 _ethcal_ui_to_amharic_number($ethDate['day']) . ', ' . 
+                 _ethcal_ui_to_amharic_number($ethDate['year']);
+        }
+        else {
+          return $month_name . ' ' . $ethDate['day'] . ', ' . $ethDate['year'];
+        }
     }
   }
   catch (Exception $e) {
@@ -164,14 +227,40 @@ function _ethcal_ui_convert_to_ethiopian($date, $use_amharic = FALSE) {
 }
 
 /**
- * Get Amharic month name.
+ * Helper function to format Gregorian date.
  */
-function _ethcal_ui_get_amharic_month_name($month) {
+function _ethcal_ui_format_gregorian_date($date, $format = 'medium') {
+  switch ($format) {
+    case 'short':
+      // e.g., "9/11/2022"
+      return $date->format('n/j/Y');
+      
+    case 'medium':
+      // e.g., "Sep 11, 2022"
+      return $date->format('M j, Y');
+      
+    case 'long':
+    default:
+      // e.g., "September 11, 2022"
+      return $date->format('F j, Y');
+  }
+}
+
+/**
+ * Get month name (Ethiopian or Amharic).
+ */
+function _ethcal_ui_get_month_name($month, $use_amharic = FALSE) {
+  $months_english = [
+    'Meskerem', 'Tikimt', 'Hidar', 'Tahsas', 'Tir', 'Yekatit',
+    'Megabit', 'Miazia', 'Ginbot', 'Sene', 'Hamle', 'Nehase', 'Pagume'
+  ];
   $months_amharic = [
     'መስከረም', 'ጥቅምት', 'ኅዳር', 'ታኅሳስ', 'ጥር', 'የካቲት',
     'መጋቢት', 'ሚያዝያ', 'ግንቦት', 'ሰኔ', 'ሐምሌ', 'ነሐሴ', 'ጳጉሜን'
   ];
-  return $months_amharic[$month - 1] ?? '';
+  
+  $month_names = $use_amharic ? $months_amharic : $months_english;
+  return $month_names[$month - 1] ?? '';
 }
 
 /**

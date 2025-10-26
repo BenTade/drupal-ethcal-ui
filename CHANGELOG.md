@@ -2,6 +2,29 @@
 
 All notable changes to the Ethiopian Calendar UI module will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- **Widget enhancements**: Added support for all ethcal-ui calendar options
+  - Use Ethiopic numerals option (፩፪፫...)
+  - Merged calendar view with both calendars in one grid
+  - Primary calendar selection (Ethiopian or Gregorian) for merged view
+  - Conditional visibility of options based on merged view setting
+- **Formatter enhancements**: Added comprehensive date formatting options
+  - Show/hide individual calendars in side-by-side formatter
+  - Ethiopian date format selection (short, medium, long)
+  - Gregorian date format selection (short, medium, long)
+  - Date format options for all three formatters
+- **Date formatting improvements**:
+  - Short format: 1/1/2015 or ፩/፩/፪፻፲፭
+  - Medium format: 1 Meskerem 2015 or ፩ መስከረም ፪፻፲፭
+  - Long format: Meskerem 1, 2015 or መስከረም ፩, ፪፻፲፭
+
+### Changed
+- Updated widget to pass all options to ethcal-ui library
+- Enhanced template preprocess functions to support new formatting options
+- Improved settings summaries for better admin UX
+
 ## [1.0.1] - 2025-10-24
 
 ### Changed

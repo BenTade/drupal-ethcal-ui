@@ -27,6 +27,9 @@ class EthiopianDateWidget extends WidgetBase {
       'use_amharic' => FALSE,
       'show_gregorian' => TRUE,
       'ethiopian_only' => FALSE,
+      'use_ethiopic_numbers' => FALSE,
+      'merged_view' => FALSE,
+      'primary_calendar' => 'ethiopian',
     ] + parent::defaultSettings();
   }
 
@@ -43,11 +46,46 @@ class EthiopianDateWidget extends WidgetBase {
       '#description' => $this->t('Display month names and numbers in Amharic script.'),
     ];
 
+    $elements['use_ethiopic_numbers'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Use Ethiopic numerals'),
+      '#default_value' => $this->getSetting('use_ethiopic_numbers'),
+      '#description' => $this->t('Display date numbers using Ethiopic numerals (፩፪፫...).'),
+    ];
+
+    $elements['merged_view'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Merged calendar view'),
+      '#default_value' => $this->getSetting('merged_view'),
+      '#description' => $this->t('Show both calendars merged in a single view with dual date display.'),
+    ];
+
+    $elements['primary_calendar'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Primary calendar in merged view'),
+      '#options' => [
+        'ethiopian' => $this->t('Ethiopian'),
+        'gregorian' => $this->t('Gregorian'),
+      ],
+      '#default_value' => $this->getSetting('primary_calendar'),
+      '#description' => $this->t('Which calendar to use as primary in merged view.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="fields[' . $this->fieldDefinition->getName() . '][settings_edit_form][settings][merged_view]"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
     $elements['show_gregorian'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Show Gregorian date alongside'),
       '#default_value' => $this->getSetting('show_gregorian'),
       '#description' => $this->t('Display both Ethiopian and Gregorian dates in the input field.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="fields[' . $this->fieldDefinition->getName() . '][settings_edit_form][settings][merged_view]"]' => ['checked' => FALSE],
+        ],
+      ],
     ];
 
     $elements['ethiopian_only'] = [
@@ -55,6 +93,11 @@ class EthiopianDateWidget extends WidgetBase {
       '#title' => $this->t('Ethiopian calendar only'),
       '#default_value' => $this->getSetting('ethiopian_only'),
       '#description' => $this->t('Only show Ethiopian calendar in the datepicker (hides Gregorian reference).'),
+      '#states' => [
+        'visible' => [
+          ':input[name="fields[' . $this->fieldDefinition->getName() . '][settings_edit_form][settings][merged_view]"]' => ['checked' => FALSE],
+        ],
+      ],
     ];
 
     return $elements;
@@ -70,7 +113,16 @@ class EthiopianDateWidget extends WidgetBase {
       $summary[] = $this->t('Using Amharic');
     }
 
-    if ($this->getSetting('show_gregorian')) {
+    if ($this->getSetting('use_ethiopic_numbers')) {
+      $summary[] = $this->t('Using Ethiopic numerals');
+    }
+
+    if ($this->getSetting('merged_view')) {
+      $summary[] = $this->t('Merged view (@primary primary)', [
+        '@primary' => $this->getSetting('primary_calendar'),
+      ]);
+    }
+    elseif ($this->getSetting('show_gregorian')) {
       $summary[] = $this->t('Show Gregorian date');
     }
 
@@ -103,7 +155,10 @@ class EthiopianDateWidget extends WidgetBase {
         'class' => ['ethcal-datepicker-input'],
         'data-widget-settings' => json_encode([
           'useAmharic' => $this->getSetting('use_amharic'),
+          'useEthiopicNumbers' => $this->getSetting('use_ethiopic_numbers'),
           'showGregorian' => !$this->getSetting('ethiopian_only') && $this->getSetting('show_gregorian'),
+          'mergedView' => $this->getSetting('merged_view'),
+          'primaryCalendar' => $this->getSetting('primary_calendar'),
         ]),
       ],
       '#attached' => [

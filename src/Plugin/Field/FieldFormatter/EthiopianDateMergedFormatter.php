@@ -25,6 +25,8 @@ class EthiopianDateMergedFormatter extends FormatterBase {
   public static function defaultSettings() {
     return [
       'use_amharic' => FALSE,
+      'ethiopian_date_format' => 'medium',
+      'gregorian_date_format' => 'medium',
     ] + parent::defaultSettings();
   }
 
@@ -41,6 +43,28 @@ class EthiopianDateMergedFormatter extends FormatterBase {
       '#description' => $this->t('Display dates using Amharic script.'),
     ];
 
+    $elements['ethiopian_date_format'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Ethiopian date format'),
+      '#options' => [
+        'short' => $this->t('Short (1/1/2015)'),
+        'medium' => $this->t('Medium (1 Meskerem 2015)'),
+        'long' => $this->t('Long (Meskerem 1, 2015)'),
+      ],
+      '#default_value' => $this->getSetting('ethiopian_date_format'),
+    ];
+
+    $elements['gregorian_date_format'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Gregorian date format'),
+      '#options' => [
+        'short' => $this->t('Short (9/11/2022)'),
+        'medium' => $this->t('Medium (Sep 11, 2022)'),
+        'long' => $this->t('Long (September 11, 2022)'),
+      ],
+      '#default_value' => $this->getSetting('gregorian_date_format'),
+    ];
+
     return $elements;
   }
 
@@ -54,7 +78,10 @@ class EthiopianDateMergedFormatter extends FormatterBase {
       $summary[] = $this->t('Amharic');
     }
 
-    $summary[] = $this->t('Merged view (Ethiopian with Gregorian in parentheses)');
+    $summary[] = $this->t('Merged view (Ethiopian @eth_format with Gregorian @greg_format in parentheses)', [
+      '@eth_format' => $this->getSetting('ethiopian_date_format'),
+      '@greg_format' => $this->getSetting('gregorian_date_format'),
+    ]);
 
     return $summary;
   }
@@ -77,6 +104,8 @@ class EthiopianDateMergedFormatter extends FormatterBase {
           '#theme' => 'ethcal_date_merged',
           '#gregorian_date' => $date_value,
           '#use_amharic' => $this->getSetting('use_amharic'),
+          '#ethiopian_date_format' => $this->getSetting('ethiopian_date_format'),
+          '#gregorian_date_format' => $this->getSetting('gregorian_date_format'),
           '#attached' => [
             'library' => [
               'ethcal_ui/formatter',
