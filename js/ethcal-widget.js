@@ -29,6 +29,20 @@
           var parsedDate = new Date($input.val());
           if (!isNaN(parsedDate.getTime())) {
             initialDate = parsedDate;
+            
+            // If primary calendar is Ethiopian, convert display to Ethiopian format
+            if (widgetSettings.primaryCalendar !== 'gregorian') {
+              // Store the ISO date
+              var isoValue = $input.val();
+              $input.attr('data-iso-date', isoValue);
+              
+              // Convert to Ethiopian format for display
+              if (typeof window.EthiopianCalendarUI.EthiopianCalendar !== 'undefined') {
+                var ethCalendar = new window.EthiopianCalendarUI.EthiopianCalendar();
+                var ethDate = ethCalendar.toEthiopian(parsedDate);
+                $input.val(ethDate.day + '/' + ethDate.month + '/' + ethDate.year);
+              }
+            }
           }
         }
 
@@ -45,12 +59,28 @@
             // date.ethiopian contains {year, month, day}
             // date.gregorian contains JavaScript Date object
             
-            // Update the input with the Gregorian date in ISO format
+            // Always store ISO format for form submission
             if (date.gregorian) {
               var year = date.gregorian.getFullYear();
               var month = String(date.gregorian.getMonth() + 1).padStart(2, '0');
               var day = String(date.gregorian.getDate()).padStart(2, '0');
-              $input.val(year + '-' + month + '-' + day);
+              var isoDate = year + '-' + month + '-' + day;
+              
+              // Display format depends on primary calendar setting
+              var displayValue;
+              if (widgetSettings.primaryCalendar === 'gregorian') {
+                // Show Gregorian date in ISO format (YYYY-MM-DD)
+                displayValue = isoDate;
+              } else {
+                // Default to Ethiopian - Show Ethiopian date
+                displayValue = date.ethiopian.day + '/' + date.ethiopian.month + '/' + date.ethiopian.year;
+              }
+              
+              // Set the display value
+              $input.val(displayValue);
+              
+              // Store the ISO date for form submission
+              $input.attr('data-iso-date', isoDate);
               
               // Trigger change event so Drupal knows the value changed
               $input.trigger('change');
@@ -75,6 +105,28 @@
           e.preventDefault();
           calendar.show();
         });
+        
+        // Clear ISO date cache if user manually changes the field
+        $input.on('input', function() {
+          // Only clear if not in Gregorian mode (since Gregorian mode shows ISO directly)
+          if (widgetSettings.primaryCalendar !== 'gregorian') {
+            $input.removeAttr('data-iso-date');
+          }
+        });
+        
+        // Handle form submission - convert display value to ISO format
+        var $form = $input.closest('form');
+        if ($form.length) {
+          $form.on('submit.ethcal-widget', function() {
+            // If displaying Ethiopian format, convert back to ISO for submission
+            if (widgetSettings.primaryCalendar !== 'gregorian') {
+              var isoDate = $input.attr('data-iso-date');
+              if (isoDate) {
+                $input.val(isoDate);
+              }
+            }
+          });
+        }
       });
     }
   };
