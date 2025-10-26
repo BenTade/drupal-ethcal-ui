@@ -58,21 +58,8 @@
           }
         });
         
-        // Prevent the default HTML5 date picker and show Ethiopian calendar
-        $input.on('click focus mousedown', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          calendar.show();
-        });
-        
-        // Also prevent keyboard navigation from opening native picker
-        $input.on('keydown', function(e) {
-          // Allow tab for navigation
-          if (e.key === 'Tab' || e.code === 'Tab') {
-            return;
-          }
-          // Prevent other keys and show our calendar
-          e.preventDefault();
+        // Show Ethiopian calendar when input is clicked
+        $input.on('click focus', function(e) {
           calendar.show();
         });
       });

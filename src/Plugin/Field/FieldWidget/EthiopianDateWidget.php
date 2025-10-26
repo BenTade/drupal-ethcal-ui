@@ -146,13 +146,14 @@ class EthiopianDateWidget extends WidgetBase {
       $value = substr($value, 0, 10); // Get YYYY-MM-DD part
     }
 
-    // Use the same structure as core datetime widget for consistent appearance
+    // Use textfield instead of date to prevent HTML5 date picker
     $element['value'] = [
-      '#type' => 'date',
+      '#type' => 'textfield',
       '#default_value' => $value,
-      '#date_date_format' => 'Y-m-d',
       '#attributes' => [
         'class' => ['ethcal-datepicker-input'],
+        'readonly' => 'readonly',
+        'placeholder' => $this->t('Select a date...'),
         'data-widget-settings' => json_encode([
           'useAmharic' => $this->getSetting('use_amharic'),
           'useEthiopicNumbers' => $this->getSetting('use_ethiopic_numbers'),
